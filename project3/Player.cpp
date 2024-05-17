@@ -10,35 +10,13 @@
 #include "utilities.h"
 
 Player::Player() : Actor(0, 0, 20, 2, 2, 2) {}
-
-void Player::setXPos(Temple board, char c) {
-    if (board.validMove(getXPos(), getYPos())) {
-        switch (c) {
-            case ARROW_RIGHT:
-                Actor::setXPos(1);
-            case ARROW_LEFT:
-                Actor::setXPos(-1);
-        }
-    }
-}
-
-void Player::setYPos(Temple board, char c) {
-    if (board.validMove(getXPos(), getYPos())) {
-        switch (c) {
-            case ARROW_UP:
-                Actor::setYPos(1);
-            case ARROW_RIGHT:
-                Actor::setYPos(-1);
-        }
-    }
-}
-
+//spawning on border
 void Player::setSpawn(Temple board) {
-    int x = randInt(0, 18);
-    int y = randInt(0, 70);
+    int x = randInt(1, 69);
+    int y = randInt(1, 17);
     while (!board.validMove(x, y)) {
-        x = randInt(0, 18);
-        y = randInt(0, 70);
+        x = randInt(1,69);
+        y = randInt(1, 17);
     }
     Actor::setXPos(x);
     Actor::setYPos(y); 

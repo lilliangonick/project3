@@ -20,23 +20,48 @@ void Game::play()
     player.setSpawn(board);
     board.setPlayer(player.getXPos(), player.getYPos());
     
-    char c = getCharacter();
+    char c = '\0';
     while (c != 'q') {
-        // switch statement based on input that calls functions
-        if (c == ARROW_LEFT) {
-            
-        } else if (c == ARROW_RIGHT) {
-            
-        } else if (c == ARROW_UP) {
-    
-        } else if (c == ARROW_DOWN) {
-            
-        } else {
-            
-        }
-        
-        board.printMap();
+
         c = getCharacter();
+        switch (c) {
+                //TODO stops moving on x pos 17
+            case ARROW_LEFT:
+                if (!board.validMove(player.getXPos() - 1, player.getYPos())) {
+                    continue;
+                }
+                else {
+                    board.movePlayer(c);
+                }
+                break;
+            case ARROW_RIGHT:
+                if (!board.validMove(player.getXPos() + 1, player.getYPos())) {
+                    continue;
+                }
+                else {
+                    board.movePlayer(c);
+                }
+                break;
+            case ARROW_UP:
+                if (!board.validMove(player.getXPos(), player.getYPos() - 1)) {
+                    continue;
+                }
+                else {
+                    board.movePlayer(c);
+                }
+                break;
+            case ARROW_DOWN:
+                if (!board.validMove(player.getXPos(), player.getYPos() + 1)) {
+                    continue;
+                }
+                else {
+                    board.movePlayer(c);
+                }
+                break;
+            default:
+                continue;
+        }
+        board.printMap();
         
     }
 }

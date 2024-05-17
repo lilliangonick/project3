@@ -16,7 +16,9 @@ public:
     void printMap();
     void move();
     bool validMove(int xPos, int yPos);
-    void setPlayer(int x, int y); 
+    bool validMoveChar(char c);
+    void setPlayer(int x, int y);
+    void movePlayer(char c);
 private:
     char m_map[18][70];
     int m_level;
