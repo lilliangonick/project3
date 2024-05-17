@@ -12,6 +12,7 @@
 		A55DEE122BF70D960013ADE3 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A55DEE0F2BF70D960013ADE3 /* main.cpp */; };
 		A55DEE152BF70DD10013ADE3 /* Temple.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A55DEE132BF70DD10013ADE3 /* Temple.cpp */; };
 		A55DEE182BF70DF10013ADE3 /* Actor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A55DEE162BF70DF10013ADE3 /* Actor.cpp */; };
+		A55DEE1C2BF710170013ADE3 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A55DEE1A2BF710170013ADE3 /* Player.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,6 +38,8 @@
 		A55DEE142BF70DD10013ADE3 /* Temple.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Temple.h; sourceTree = "<group>"; };
 		A55DEE162BF70DF10013ADE3 /* Actor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Actor.cpp; sourceTree = "<group>"; };
 		A55DEE192BF70E2D0013ADE3 /* Actor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Actor.h; sourceTree = "<group>"; };
+		A55DEE1A2BF710170013ADE3 /* Player.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Player.cpp; sourceTree = "<group>"; };
+		A55DEE1B2BF710170013ADE3 /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +81,8 @@
 				A55DEE132BF70DD10013ADE3 /* Temple.cpp */,
 				A55DEE192BF70E2D0013ADE3 /* Actor.h */,
 				A55DEE162BF70DF10013ADE3 /* Actor.cpp */,
+				A55DEE1B2BF710170013ADE3 /* Player.h */,
+				A55DEE1A2BF710170013ADE3 /* Player.cpp */,
 			);
 			path = project3;
 			sourceTree = "<group>";
@@ -141,6 +146,7 @@
 			files = (
 				A55DEE112BF70D960013ADE3 /* utilities.cpp in Sources */,
 				A55DEE122BF70D960013ADE3 /* main.cpp in Sources */,
+				A55DEE1C2BF710170013ADE3 /* Player.cpp in Sources */,
 				A55DEE152BF70DD10013ADE3 /* Temple.cpp in Sources */,
 				A55DEE102BF70D960013ADE3 /* Game.cpp in Sources */,
 				A55DEE182BF70DF10013ADE3 /* Actor.cpp in Sources */,

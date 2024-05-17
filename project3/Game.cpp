@@ -8,7 +8,8 @@ using namespace std;
 // Implement these and other Game member functions you may have added.
 
 Game::Game(int goblinSmellDistance)
-{}
+{
+}
 
 void Game::play()
 {
@@ -18,7 +19,21 @@ void Game::play()
     char c = getCharacter();
     while (c != 'q') {
         // switch statement based on input that calls functions
+        if (c == ARROW_LEFT) {
+            
+        } else if (c == ARROW_RIGHT) {
+            
+        } else if (c == ARROW_UP) {
+    
+        } else if (c == ARROW_DOWN) {
+            
+        } else {
+            
+        }
+        
+        board.printMap();
         c = getCharacter();
+        
     }
 }
 

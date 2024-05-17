@@ -11,8 +11,6 @@
 
 Actor::Actor(int xPos, int yPos, int hit, int armor, int strength, int dexterity) : m_x(xPos), m_y(yPos), m_hit(hit), m_armor(armor), m_strength(strength), m_dexterity(dexterity), m_sleepTime(0) {}
 
-Player::Player() : Actor(randInt(1, 17), randInt(1, 69), 20, 2, 2, 2) {}
-
 // get and set actors attributes
 int Actor::getHP() {
     return m_hit;
