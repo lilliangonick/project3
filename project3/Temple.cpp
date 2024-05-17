@@ -6,9 +6,10 @@
 //
 
 #include "Temple.h"
+#include "Player.h"
 #include <iostream>
 
-Temple::Temple() {
+Temple::Temple(Player* pointer) : player(pointer) {
     for (int i = 0; i < 18; i++) {
         for (int j = 0; j < 70; j++) {
             if (i == 0 || j == 0|| j == 69 || i == 17) {
@@ -19,6 +20,10 @@ Temple::Temple() {
         }
     }
  }
+
+void Temple::setPlayer(int x, int y) {
+    m_map[x][y] = '@';
+}
 
 void Temple::printMap() {
     for (int i = 0; i < 18; i++) {

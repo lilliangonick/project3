@@ -37,11 +37,11 @@ int Actor::getDexterity() {
 }
 
 void Actor::setXPos(int n) {
-    m_x = m_x + n;
+    m_x = n;
 }
 
 void Actor::setYPos(int n) {
-    m_y = m_y + n;
+    m_y = n;
 }
 
 void Actor::setHP(int n) {

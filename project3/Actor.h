@@ -14,7 +14,7 @@ using namespace std;
 
 class Actor {
 public:
-    Actor(int x_Pos, int yPos, int hit, int armor, int strength, int dexterity);
+    Actor(int xPos, int yPos, int hit, int armor, int strength, int dexterity);
     
     void attack();
     

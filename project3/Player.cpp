@@ -9,7 +9,7 @@
 #include "Temple.h"
 #include "utilities.h"
 
-Player::Player() : Actor(randInt(1, 17), randInt(1, 69), 20, 2, 2, 2) {}
+Player::Player() : Actor(0, 0, 20, 2, 2, 2) {}
 
 void Player::setXPos(Temple board, char c) {
     if (board.validMove(getXPos(), getYPos())) {
@@ -31,4 +31,15 @@ void Player::setYPos(Temple board, char c) {
                 Actor::setYPos(-1);
         }
     }
+}
+
+void Player::setSpawn(Temple board) {
+    int x = randInt(0, 18);
+    int y = randInt(0, 70);
+    while (!board.validMove(x, y)) {
+        x = randInt(0, 18);
+        y = randInt(0, 70);
+    }
+    Actor::setXPos(x);
+    Actor::setYPos(y); 
 }

@@ -15,8 +15,8 @@ public:
     void play();
 private:
     int m_level;
-    Temple board; 
     Player player; 
+    Temple board;
 };
 
 #endif // GAME_INCLUDED

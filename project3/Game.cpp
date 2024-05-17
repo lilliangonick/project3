@@ -7,14 +7,18 @@ using namespace std;
 
 // Implement these and other Game member functions you may have added.
 
-Game::Game(int goblinSmellDistance)
+Game::Game(int goblinSmellDistance) : m_level(0), player(Player()), board(Temple(&player))
 {
+
 }
 
 void Game::play()
 {
     cout << "The game hasn't been implemented yet." << endl;
     cout << "Press q to exit game." << endl;
+    
+    player.setSpawn(board);
+    board.setPlayer(player.getXPos(), player.getYPos());
     
     char c = getCharacter();
     while (c != 'q') {

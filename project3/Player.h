@@ -11,6 +11,8 @@
 #include "Actor.h"
 #include "Temple.h"
 
+class Temple;
+
 class Player : public Actor {
 public:
     Player();
@@ -18,6 +20,8 @@ public:
     
     virtual void setXPos(Temple board, char c);
     virtual void setYPos(Temple board, char c);
+    
+    void setSpawn(Temple board);
     
     // player actions
     void pickUpObject();
