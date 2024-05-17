@@ -19,6 +19,8 @@ public:
     void attack();
     
     // get actor attributes
+    int getXPos();
+    int getYPos();
     int getHP();
     int getArmor();
     int getStrength();
@@ -26,6 +28,8 @@ public:
     int getSleepTime();
     
     // set actor attributes
+    virtual void setXPos(int n);
+    virtual void setYPos(int n);
     void setHP(int n);
     void setArmor(int n);
     void setStrength(int n);

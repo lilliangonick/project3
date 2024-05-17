@@ -29,3 +29,9 @@ void Temple::printMap() {
     }
 }
 
+bool Temple::validMove(int xPos, int yPos) {
+    if (m_map[xPos][yPos] == '#') {
+        return false;
+    }
+    return true;
+}

@@ -9,12 +9,15 @@
 #define Player_h
 
 #include "Actor.h"
- 
+#include "Temple.h"
 
 class Player : public Actor {
 public:
     Player();
     void move();
+    
+    virtual void setXPos(Temple board, char c);
+    virtual void setYPos(Temple board, char c);
     
     // player actions
     void pickUpObject();

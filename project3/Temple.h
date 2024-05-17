@@ -12,6 +12,8 @@ class Temple {
 public:
     Temple();
     void printMap();
+    void move();
+    bool validMove(int xPos, int yPos); 
 private:
     char m_map[18][70];
     int m_level;

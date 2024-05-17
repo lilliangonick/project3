@@ -12,6 +12,14 @@
 Actor::Actor(int xPos, int yPos, int hit, int armor, int strength, int dexterity) : m_x(xPos), m_y(yPos), m_hit(hit), m_armor(armor), m_strength(strength), m_dexterity(dexterity), m_sleepTime(0) {}
 
 // get and set actors attributes
+int Actor::getXPos() {
+    return m_x;
+}
+
+int Actor::getYPos() {
+    return m_y;
+}
+
 int Actor::getHP() {
     return m_hit;
 }
@@ -26,6 +34,14 @@ int Actor::getStrength() {
 
 int Actor::getDexterity() {
     return m_dexterity;
+}
+
+void Actor::setXPos(int n) {
+    m_x = m_x + n;
+}
+
+void Actor::setYPos(int n) {
+    m_y = m_y + n;
 }
 
 void Actor::setHP(int n) {
