@@ -8,16 +8,17 @@
 #include "Player.h"
 #include "Temple.h"
 #include "utilities.h"
+#include <iostream>
+using namespace std;
 
 Player::Player() : Actor(0, 0, 20, 2, 2, 2) {}
-//spawning on border
-void Player::setSpawn(Temple board) {
-    int x = randInt(1, 69);
-    int y = randInt(1, 17);
-    while (!board.validMove(x, y)) {
-        x = randInt(1,69);
-        y = randInt(1, 17);
+
+void Player::setHP(int n) {
+    if (getHP() + n <= m_maxHP) {
+        Actor::setHP(n);
     }
-    Actor::setXPos(x);
-    Actor::setYPos(y); 
+}
+
+void Player::playerMaxHP(int n) {
+    m_maxHP = getHP() + n;
 }

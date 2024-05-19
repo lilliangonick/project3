@@ -45,27 +45,42 @@ void Actor::setYPos(int n) {
 }
 
 void Actor::setHP(int n) {
-    m_hit = m_hit + n;
+    if (m_hit + n <= 99) {
+        m_hit = m_hit + n;
+    }
 }
 
 void Actor::setArmor(int n) {
-    m_armor = m_armor + n;
+    if (m_armor + n <= 99) {
+        m_armor = m_armor + n;;
+    }
 }
 
 void Actor::setStrength(int n) {
-    m_strength = m_strength + n;
+    if (m_strength + n <= 99) {
+        m_strength = m_strength + n;
+    }
 }
 
 void Actor::setDexterity(int n) {
-    m_dexterity = m_dexterity + n;
+    if (m_dexterity + n <= 99) {
+        m_dexterity = m_dexterity + n;
+    }
 }
 
 void Actor::setSleepTime(int n) {
     m_sleepTime = m_sleepTime + n;
 }
 
+bool Actor::isDead() {
+    if (m_hit == 0) {
+        return true;
+    }
+    return false; 
+}
+
+
+
+// TODO ideas
 // inventory class with a inventory pointer to the player
-
-
-
 // in board class put a vector that contains all mosnters so you know wehre they are 

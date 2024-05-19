@@ -7,49 +7,160 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "23DE92DD-D506-4FBE-951A-E6411376687F"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "project3/Player.cpp"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "22"
-            endingLineNumber = "22"
-            landmarkName = "Player::setSpawn(board)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "4B24858C-0CEB-4C4E-B466-DDCB7D289E5C"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "project3/Player.cpp"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "21"
-            endingLineNumber = "21"
-            landmarkName = "Player::setSpawn(board)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "42002E83-D982-44CD-A8CF-95FD35C9B929"
+            uuid = "302B2C6E-3851-4533-BD96-D3249643F262"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "project3/Game.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "26"
-            endingLineNumber = "26"
+            startingLineNumber = "20"
+            endingLineNumber = "20"
             landmarkName = "Game::play()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "302B2C6E-3851-4533-BD96-D3249643F262 - 8eeda0fa756c7f8c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Game::play()"
+                  moduleName = "project3"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillygonick/Desktop/cs32/projects/project3/project3/Game.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "20"
+                  endingLineNumber = "20"
+                  offsetFromSymbolStart = "92">
+               </Location>
+               <Location
+                  uuid = "302B2C6E-3851-4533-BD96-D3249643F262 - 8eeda0fa756c7f8c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Game::play()"
+                  moduleName = "project3"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillygonick/Desktop/cs32/projects/project3/project3/Game.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "20"
+                  endingLineNumber = "20"
+                  offsetFromSymbolStart = "108">
+               </Location>
+               <Location
+                  uuid = "302B2C6E-3851-4533-BD96-D3249643F262 - 8eeda0fa756c7fd3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Game::play()"
+                  moduleName = "project3"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillygonick/Desktop/cs32/projects/project3/project3/Game.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "21"
+                  endingLineNumber = "21"
+                  offsetFromSymbolStart = "92">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2BA085EA-A852-4973-AF32-350CCC01026F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "project3/Game.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "21"
+            endingLineNumber = "21"
+            landmarkName = "Game::play()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "2BA085EA-A852-4973-AF32-350CCC01026F - 8eeda0fa756c7fd3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Game::play()"
+                  moduleName = "project3"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillygonick/Desktop/cs32/projects/project3/project3/Game.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "21"
+                  endingLineNumber = "21"
+                  offsetFromSymbolStart = "148">
+               </Location>
+               <Location
+                  uuid = "2BA085EA-A852-4973-AF32-350CCC01026F - 8eeda0fa756c7fd3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Game::play()"
+                  moduleName = "project3"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillygonick/Desktop/cs32/projects/project3/project3/Game.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "21"
+                  endingLineNumber = "21"
+                  offsetFromSymbolStart = "92">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3DD1BA2A-875B-4036-A1C1-14AAA46B59D5"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "project3/Game.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "23"
+            endingLineNumber = "23"
+            landmarkName = "Game::play()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "3DD1BA2A-875B-4036-A1C1-14AAA46B59D5 - 8eeda0fa756c7c11"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Game::play()"
+                  moduleName = "project3"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillygonick/Desktop/cs32/projects/project3/project3/Game.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "23"
+                  endingLineNumber = "23"
+                  offsetFromSymbolStart = "152">
+               </Location>
+               <Location
+                  uuid = "3DD1BA2A-875B-4036-A1C1-14AAA46B59D5 - 8eeda0fa756c7c11"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Game::play()"
+                  moduleName = "project3"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillygonick/Desktop/cs32/projects/project3/project3/Game.cpp"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "23"
+                  endingLineNumber = "23"
+                  offsetFromSymbolStart = "148">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

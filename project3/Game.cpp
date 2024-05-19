@@ -7,9 +7,9 @@ using namespace std;
 
 // Implement these and other Game member functions you may have added.
 
-Game::Game(int goblinSmellDistance) : m_level(0), player(Player()), board(Temple(&player))
+Game::Game(int goblinSmellDistance) : player(Player()), board(Temple(&player))
 {
-
+    
 }
 
 void Game::play()
@@ -17,8 +17,14 @@ void Game::play()
     cout << "The game hasn't been implemented yet." << endl;
     cout << "Press q to exit game." << endl;
     
-    player.setSpawn(board);
+    board.setPlayerSpawn();
     board.setPlayer(player.getXPos(), player.getYPos());
+    
+    board.setMonster();
+    board.setMonsterSpawn();
+    
+    board.setGameObject();
+    board.setGameObjectSpawn();
     
     char c = '\0';
     while (c != 'q') {
@@ -62,6 +68,7 @@ void Game::play()
                 continue;
         }
         board.printMap();
+        board.printStats();
         
     }
 }
@@ -71,3 +78,5 @@ void Game::play()
 // etc.  You might have a separate .h/.cpp pair for each class (e.g., Player.h,
 // Bogeyman.h, etc.), or you might put the class declarations for all actors in
 // Actor.h, all game objects in GameObject.h, etc.
+
+// in board, switch statement for what item you recieve, then get the player's stats and change them, then remove the object from the board

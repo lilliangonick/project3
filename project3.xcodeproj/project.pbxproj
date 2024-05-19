@@ -13,6 +13,8 @@
 		A55DEE152BF70DD10013ADE3 /* Temple.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A55DEE132BF70DD10013ADE3 /* Temple.cpp */; };
 		A55DEE182BF70DF10013ADE3 /* Actor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A55DEE162BF70DF10013ADE3 /* Actor.cpp */; };
 		A55DEE1C2BF710170013ADE3 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A55DEE1A2BF710170013ADE3 /* Player.cpp */; };
+		A5D826502BF88F02003B28C7 /* Monster.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D8264E2BF88F02003B28C7 /* Monster.cpp */; };
+		A5E550D72BF92322001F3936 /* GameObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5E550D52BF92322001F3936 /* GameObject.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,6 +42,10 @@
 		A55DEE192BF70E2D0013ADE3 /* Actor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Actor.h; sourceTree = "<group>"; };
 		A55DEE1A2BF710170013ADE3 /* Player.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Player.cpp; sourceTree = "<group>"; };
 		A55DEE1B2BF710170013ADE3 /* Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
+		A5D8264E2BF88F02003B28C7 /* Monster.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Monster.cpp; sourceTree = "<group>"; };
+		A5D8264F2BF88F02003B28C7 /* Monster.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Monster.h; sourceTree = "<group>"; };
+		A5E550D52BF92322001F3936 /* GameObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GameObject.cpp; sourceTree = "<group>"; };
+		A5E550D62BF92322001F3936 /* GameObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameObject.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +89,10 @@
 				A55DEE162BF70DF10013ADE3 /* Actor.cpp */,
 				A55DEE1B2BF710170013ADE3 /* Player.h */,
 				A55DEE1A2BF710170013ADE3 /* Player.cpp */,
+				A5D8264F2BF88F02003B28C7 /* Monster.h */,
+				A5D8264E2BF88F02003B28C7 /* Monster.cpp */,
+				A5E550D62BF92322001F3936 /* GameObject.h */,
+				A5E550D52BF92322001F3936 /* GameObject.cpp */,
 			);
 			path = project3;
 			sourceTree = "<group>";
@@ -144,9 +154,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5E550D72BF92322001F3936 /* GameObject.cpp in Sources */,
 				A55DEE112BF70D960013ADE3 /* utilities.cpp in Sources */,
 				A55DEE122BF70D960013ADE3 /* main.cpp in Sources */,
 				A55DEE1C2BF710170013ADE3 /* Player.cpp in Sources */,
+				A5D826502BF88F02003B28C7 /* Monster.cpp in Sources */,
 				A55DEE152BF70DD10013ADE3 /* Temple.cpp in Sources */,
 				A55DEE102BF70D960013ADE3 /* Game.cpp in Sources */,
 				A55DEE182BF70DF10013ADE3 /* Actor.cpp in Sources */,

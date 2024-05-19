@@ -17,7 +17,8 @@ class Player : public Actor {
 public:
     Player();
     
-    void setSpawn(Temple board);
+    virtual void setHP(int n); 
+    void playerMaxHP(int n);
     
     // player actions
     void pickUpObject();
@@ -26,6 +27,7 @@ public:
     void seeInventory();
     
 private:
+    int m_maxHP; 
     // vector for the inventory
     
 };

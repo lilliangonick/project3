@@ -5,6 +5,9 @@
 
 #include "Temple.h"
 #include "Player.h"
+#include "Monster.h"
+
+#include <list>
 
 // You may add data members and other member functions to this class.
 
@@ -14,7 +17,6 @@ public:
     Game(int goblinSmellDistance);
     void play();
 private:
-    int m_level;
     Player player; 
     Temple board;
 };
