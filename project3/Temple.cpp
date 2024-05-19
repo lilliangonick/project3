@@ -16,7 +16,7 @@
 
 using namespace std;
 
-// create temple
+// create temple (constructor)
 Temple::Temple(Player* pointer) : player(pointer), m_level(0) {
     for (int i = 0; i < 18; i++) {
         for (int j = 0; j < 70; j++) {
@@ -28,6 +28,16 @@ Temple::Temple(Player* pointer) : player(pointer), m_level(0) {
         }
     }
  }
+
+// destructor (deallocate memory)
+Temple::~Temple() {
+    for (size_t i = 0; i < monsters.size(); i++) {
+        delete monsters[i];
+    }
+    for (size_t i = 0; i < objects.size(); i++) {
+        delete objects[i];
+    }
+}
 
 // display map
 void Temple::printMap() {
@@ -63,6 +73,18 @@ bool Temple::validMove(int xPos, int yPos) {
 // move the player based on a command
 void Temple::movePlayer(char c) {
     m_map[player->getYPos()][player->getXPos()] = ' ';
+    // make sure player movement does not overwrite the objects
+    if (isObjectAt(player->getXPos(), player->getYPos())) {
+        for (size_t i = 0; i < objects.size(); i++) {
+            if (objects[i]->getXPos() == player->getXPos() && objects[i]->getYPos() == player->getYPos()) {
+                if (objects[i]->getType() == "Scroll") {
+                    m_map[objects[i]->getYPos()][objects[i]->getXPos()] = '?';
+                } else {
+                    m_map[objects[i]->getYPos()][objects[i]->getXPos()] = '(';
+                }
+            }
+        }
+    }
     if (c == ARROW_LEFT) {
         player->Actor::setXPos(player->getXPos() - 1);
     } else if (c == ARROW_RIGHT) {
@@ -74,7 +96,6 @@ void Temple::movePlayer(char c) {
     } else {
         cout << "BAD";  // REMOVE BEFORE SUBMIT
     }
-    cout << player->getXPos() << " " << player->getYPos() << endl;
     setPlayer(player->getXPos(), player->getYPos());
 }
 
@@ -92,7 +113,7 @@ void Temple::setPlayerSpawn() {
 
 // set spawn of the monsters
 void Temple::setMonsterSpawn() {
-    for (int i = 0; i < monsters.size(); i++) {
+    for (size_t i = 0; i < monsters.size(); i++) {
         int x = randInt(1, 69);
         int y = randInt(1, 17);
         while (!validMove(x, y)) {
@@ -114,6 +135,7 @@ void Temple::setMonsterSpawn() {
     }
 }
 
+// create new monsters at the spawn of a new level
 void Temple::setMonster() {
     int m;
     if (m_level == 0) {
@@ -199,12 +221,13 @@ void Temple::setMonster() {
     }
 }
 
+// spawn 2 -3 GameObjects at the start of a new level
 void Temple::setGameObject() {
     int num = randInt(2, 3);
     vector<string> objectTypes = {
             "mace", "short sword", "long sword",
-            "armor", "strength",
-            "health", "dexterity"
+            "scroll of enhance armor", "scroll of strength",
+            "scroll of enhance health", "scroll of enhance dexterity"
         };
 
     for (int i = 0; i < num; i++) {
@@ -213,32 +236,33 @@ void Temple::setGameObject() {
         
         GameObject* object = nullptr;
         if (objectType == "mace") {
-            object = new Weapon("mace", 0, 2);
+            object = new Weapon("mace", "swings", 0, 2);
             objects.push_back(object);
         } else if (objectType == "short sword") {
-            object = new Weapon("short sword", 0, 2);
+            object = new Weapon("short sword", "slashes", 0, 2);
             objects.push_back(object);
         } else if (objectType == "long sword") {
-            object = new Weapon("long sword", 2, 4);
+            object = new Weapon("long sword", "swings", 2, 4);
             objects.push_back(object);
-        } else if (objectType == "armor") {
-            object = new Scroll("armor");
+        } else if (objectType == "scroll of enhance armor") {
+            object = new Scroll("scroll of enhance armor");
             objects.push_back(object);
-        } else if (objectType == "strength") {
-            object = new Scroll("strength");
+        } else if (objectType == "scroll of strength") {
+            object = new Scroll("scroll of strength");
             objects.push_back(object);
-        } else if (objectType == "health") {
-            object = new Scroll("health");
+        } else if (objectType == "scroll of enhance health") {
+            object = new Scroll("scroll of enhance health");
             objects.push_back(object);
-        } else if (objectType == "dexterity") {
-            object = new Scroll("dexterity");
+        } else if (objectType == "scroll of enhance dexterity") {
+            object = new Scroll("scroll of enhance dexterity");
             objects.push_back(object);
         }
     }
 }
 
+// set the positions of the GameObjects (at the start of the level)
 void Temple::setGameObjectSpawn() {
-    for (int i = 0; i < objects.size(); i++) {
+    for (size_t i = 0; i < objects.size(); i++) {
         int x = randInt(1, 69);
         int y = randInt(1, 17);
         while (!validMove(x, y)) {
@@ -247,15 +271,20 @@ void Temple::setGameObjectSpawn() {
         }
         objects[i]->setXPos(x);
         objects[i]->setYPos(y);
-        m_map[objects[i]->getYPos()][objects[i]->getXPos()] = '(';
+        
+        if (objects[i]->getName() == "scroll of teleportation" || objects[i]->getName() == "scroll of armor" || objects[i]->getName() == "scroll of strength" || objects[i]->getName() == "scroll of enhance health" || objects[i]->getName() == "scroll of enhance dexterity") {
+            m_map[objects[i]->getYPos()][objects[i]->getXPos()] = '?';
+        } else {
+            m_map[objects[i]->getYPos()][objects[i]->getXPos()] = '(';
+        }
     }
 }
 // sometimes do not have any objects
 
-// apply scroll effect
+// apply the effect of using the scrolls
 void Temple::applyScroll(GameObject* scroll) {
     // teleportation object
-    if (scroll->getName() == "teleportation") {
+    if (scroll->getName() == "scroll of teleportation") {
         int x = randInt(1, 69);
         int y = randInt(1, 17);
         while (!validMove(x, y)) {
@@ -264,13 +293,35 @@ void Temple::applyScroll(GameObject* scroll) {
         }
         player->setXPos(x);
         player->setYPos(y);
-    } else if (scroll->getName() == "armor") {
+    } else if (scroll->getName() == "scroll of armor") {
         player->setArmor(randInt(1, 3));
-    } else if (scroll->getName() == "strength") {
+    } else if (scroll->getName() == "scroll of strength") {
         player->setStrength(randInt(1, 3));
-    } else if (scroll->getName() == "health") {
+    } else if (scroll->getName() == "croll of enhance health") {
         player->playerMaxHP(randInt(3, 8));
-    } else if (scroll->getName() == "dexterity") {
-        player->setDexterity(1); 
+    } else if (scroll->getName() == "scroll of enhance dexterity") {
+        player->setDexterity(1);
     }
+}
+
+// check if there is an object on the same position of an actor (to be able to 'g' command it into the inventory) 
+bool Temple::checkForObjects() {
+    for (size_t i = 0; i < objects.size(); i++) {
+        if (player->getXPos() == objects[i]->getXPos() && player->getYPos() == objects[i]->getYPos()) {
+            player->pickUpObject(objects[i]);
+            objects.erase(objects.begin() + i);
+            return true; 
+        }
+    }
+    return false; 
+}
+
+// check the position of each object in the inventory
+bool Temple::isObjectAt(int x, int y) {
+    for (size_t i = 0; i < objects.size(); i++) {
+        if (objects[i]->getXPos() == x && objects[i]->getYPos() == y) {
+            return true;
+        }
+    }
+    return false;
 }

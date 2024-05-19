@@ -9,14 +9,16 @@
 #define Monster_h
 
 #include "Actor.h"
-#include "Temple.h"
+//#include "Temple.h"
+#include <string>
 
 class Monster : public Actor {
 public:
-    Monster(int xPos, int yPos, int hit, int armor, int strength, int dexterity);
+    Monster(string name, int xPos, int yPos, int hit, string weaponName, string actionString, int dexterityBonus, int damage, int armor, int strength, int dexterity);
+    virtual ~Monster();
     void handleTurn(); // ABC
     void dropItem(); // will eventually return a weapon type 
-    void setMonsterSpawn(Temple board);
+//    void setMonsterSpawn(Temple board);
 };
 
 class Bogeyman : public Monster {

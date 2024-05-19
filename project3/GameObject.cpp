@@ -8,8 +8,11 @@
 #include "GameObject.h"
 #include "utilities.h"
  
+// constructor
+GameObject::GameObject(string type, string name) : m_type(type), m_name(name) {}
 
-GameObject::GameObject(string name) : m_name(name) {}
+// virtual destructor for base class
+GameObject::~GameObject() {}
 
 int GameObject::getXPos() {
     return m_x;
@@ -31,8 +34,24 @@ string GameObject::getName() {
     return m_name; 
 }
 
-Weapon::Weapon(string name, int dexterityBonus, int damage) : GameObject(name), m_dexterityBonus(dexterityBonus), m_damage(damage) {}
+string GameObject::getType() {
+    return m_type;
+}
 
-Scroll::Scroll(string name) : GameObject(name) {}
+Weapon::Weapon(string name, string actionString, int dexterityBonus, int damage) : GameObject("Weapon", name), m_actionString(actionString), m_dexterityBonus(dexterityBonus), m_damage(damage) {}
+
+string Weapon::getAction() {
+    return m_actionString;
+}
+
+int Weapon::getDexterityBonus() {
+    return m_dexterityBonus;
+}
+
+int Weapon::getDamage() {
+    return m_damage; 
+}
+
+Scroll::Scroll(string name) : GameObject("Scroll", name) {}
 
 

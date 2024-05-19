@@ -8,7 +8,7 @@
 #ifndef Temple_h
 #define Temple_h
 
-#include <list>
+#include <vector>
 
 using namespace std; 
 
@@ -19,6 +19,8 @@ class GameObject;
 class Temple {
 public:
     Temple(Player* pointer);
+    ~Temple();
+             
     void printMap();
     void move();
     void printStats();
@@ -42,6 +44,8 @@ public:
     // game objects
     void setGameObject(); 
     void applyScroll(GameObject* scroll); 
+    bool checkForObjects();
+    bool isObjectAt(int x, int y);
     
 private:
     char m_map[18][70];

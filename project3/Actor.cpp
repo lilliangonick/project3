@@ -8,8 +8,13 @@
 #include "Actor.h"
 #include "utilities.h"
 #include <string>
+#include <iostream>
 
-Actor::Actor(int xPos, int yPos, int hit, int armor, int strength, int dexterity) : m_x(xPos), m_y(yPos), m_hit(hit), m_armor(armor), m_strength(strength), m_dexterity(dexterity), m_sleepTime(0) {}
+using namespace std;
+
+Actor::Actor(string name, int xPos, int yPos, int hit, string weaponName, string actionString, int dexterityBonus, int damage, int armor, int strength, int dexterity) : m_name(name), m_x(xPos), m_y(yPos), m_hit(hit), m_weapon(weaponName, actionString, dexterityBonus, damage), m_armor(armor), m_strength(strength), m_dexterity(dexterity), m_sleepTime(0) {}
+
+Actor::~Actor() {}
 
 // get and set actors attributes
 int Actor::getXPos() {
@@ -34,6 +39,14 @@ int Actor::getStrength() {
 
 int Actor::getDexterity() {
     return m_dexterity;
+}
+
+string Actor::getName() {
+    return m_name;
+}
+
+Weapon Actor::getWeapon() {
+    return m_weapon;
 }
 
 void Actor::setXPos(int n) {
@@ -70,6 +83,30 @@ void Actor::setDexterity(int n) {
 
 void Actor::setSleepTime(int n) {
     m_sleepTime = m_sleepTime + n;
+}
+
+void Actor::setWeapon(Weapon weapon) {
+    m_weapon = weapon;
+}
+
+void Actor::attack(Actor* attacker, Actor* defender, Weapon* weapon) {
+    int attackerPoints = attacker->getDexterity() + weapon->getDexterityBonus();
+    int defenderPoints = defender->getDexterity() + defender->getArmor();
+    
+    bool hit = false;
+    if (randInt(1, attackerPoints) >= randInt(1, defenderPoints)) {
+        int damageAmount = randInt(0, attacker->getStrength() + weapon->getDamage() - 1);
+        defender->setHP(defender->getHP() - damageAmount);
+        hit = true;
+    }
+    
+    string result;
+    if (hit) {
+       result = "hits";
+    } else {
+        result = "misses";
+    }
+    cout << attacker->getName() << " " << weapon->getName() << "at" << defender->getName() << "and" << result;
 }
 
 bool Actor::isDead() {

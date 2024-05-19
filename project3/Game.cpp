@@ -39,6 +39,8 @@ void Game::play()
                 else {
                     board.movePlayer(c);
                 }
+                board.printMap();
+                board.printStats();
                 break;
             case ARROW_RIGHT:
                 if (!board.validMove(player.getXPos() + 1, player.getYPos())) {
@@ -47,6 +49,8 @@ void Game::play()
                 else {
                     board.movePlayer(c);
                 }
+                board.printMap();
+                board.printStats();
                 break;
             case ARROW_UP:
                 if (!board.validMove(player.getXPos(), player.getYPos() - 1)) {
@@ -55,6 +59,8 @@ void Game::play()
                 else {
                     board.movePlayer(c);
                 }
+                board.printMap();
+                board.printStats();
                 break;
             case ARROW_DOWN:
                 if (!board.validMove(player.getXPos(), player.getYPos() + 1)) {
@@ -63,12 +69,24 @@ void Game::play()
                 else {
                     board.movePlayer(c);
                 }
+                board.printMap();
+                board.printStats();
                 break;
+            case 'g':
+                if (board.checkForObjects()) {
+                    continue;
+                }
+                board.printMap();
+                board.printStats();
+                break;
+            case 'w':
+            case 'r':
+            case 'i':
+                player.printInventory();
+                break; 
             default:
-                continue;
+                break;
         }
-        board.printMap();
-        board.printStats();
         
     }
 }

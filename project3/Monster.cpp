@@ -9,24 +9,15 @@
 #include "Temple.h"
 #include "utilities.h"
 
-Monster::Monster(int xPos, int yPos, int hit, int armor, int strength, int dexterity) : Actor(0, 0, hit, armor, strength, dexterity) {}
+Monster::Monster(string name, int xPos, int yPos, int hit, string weaponName, string actionString, int dexterityBonus, int damage, int armor, int strength, int dexterity) : Actor(name, 0, 0, hit, weaponName, actionString, dexterityBonus, damage, armor, strength, dexterity) {}
 
-//spawning on border
-void Monster::setMonsterSpawn(Temple board) {
-    int x = randInt(1, 69);
-    int y = randInt(1, 17);
-    while (!board.validMove(x, y)) {
-        x = randInt(1,69);
-        y = randInt(1, 17);
-    }
-    Actor::setXPos(x);
-    Actor::setYPos(y);
-}
+// virtual destructor for Monster base class
+Monster::~Monster() {}
 
-Bogeyman::Bogeyman() : Monster(0, 0, randInt(5, 11), randInt(2, 4), randInt(2, 4), 2) {}
+Bogeyman::Bogeyman() : Monster("the Bogeyman", 0, 0, randInt(5, 10), "short sword", "slashes", 0, 2, randInt(2, 3), randInt(2, 3), 2) {}
 
-Snakewoman::Snakewoman() : Monster(0, 0, randInt(3, 7), 3, 2, 3) {}
+Snakewoman::Snakewoman() : Monster("the Snakewoman", 0, 0, randInt(3, 6), "magic fangs of sleep", "strikes", 3, 2, 3, 2, 3) {}
 
-Dragon::Dragon() : Monster(0, 0, randInt(20, 26), 4, 4, 4) {}
+Dragon::Dragon() : Monster("the Dragon", 0, 0, randInt(20, 25), "long sword", "swings", 2, 4, 4, 4, 4) {}
 
-Goblin::Goblin() : Monster(0, 0, randInt(15, 21), 1, 3, 1) {}
+Goblin::Goblin() : Monster("the Goblin", 0, 0, randInt(15, 20), "short sword", "slashes", 0, 2, 1, 3, 1) {}

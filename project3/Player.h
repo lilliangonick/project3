@@ -10,25 +10,31 @@
 
 #include "Actor.h"
 #include "Temple.h"
+#include <vector>
+
+#include "GameObject.h"
 
 class Temple;
 
 class Player : public Actor {
 public:
     Player();
+    virtual ~Player();
     
     virtual void setHP(int n); 
     void playerMaxHP(int n);
     
     // player actions
-    void pickUpObject();
+    void pickUpObject(GameObject* object);
     void swapWeapons();
     void activateScroll();
-    void seeInventory();
+    
+    // inventory stuff
+    void printInventory();
     
 private:
     int m_maxHP; 
-    // vector for the inventory
+    vector<GameObject*> inventory;
     
 };
 
