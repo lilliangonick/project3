@@ -27,7 +27,7 @@ public:
     int getStrength();
     int getDexterity();
     int getSleepTime();
-    Weapon* getWeapon();
+    Weapon getWeapon();
     string getName();
     
     // set actor attributes
@@ -39,6 +39,7 @@ public:
     void setDexterity(int n);
     void setSleepTime(int n);
     void setWeapon(Weapon weapon);
+    void CHANGESTRENGTH(int n);
     
     
     // display messages after actor action

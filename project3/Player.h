@@ -26,15 +26,23 @@ public:
     
     // player actions
     void pickUpObject(GameObject* object);
-    void swapWeapons();
-    void activateScroll();
+    void applyScroll(GameObject* scroll);
+    
+    void weildWeapon();
+    void readScroll();
     
     // inventory stuff
     void printInventory();
+    void printInventoryResult();
+    vector<string> getInventoryResults();
+    
+    // player can cheat
+    void cheat();
     
 private:
     int m_maxHP; 
     vector<GameObject*> inventory;
+    vector<string> inventoryResult;
     
 };
 

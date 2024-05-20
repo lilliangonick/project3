@@ -46,18 +46,22 @@ public:
     
     // game objects
     void setGameObject(); 
-    void applyScroll(GameObject* scroll); 
+//    void applyScroll(GameObject* scroll); 
     bool checkForObjects();
     bool isObjectAt(int x, int y);
     
-    void attack(Actor* attacker, Actor* defender, Weapon* weapon);
+    // let one actor attack another
+    void attack(Actor* attacker, Actor* defender, Weapon weapon);
 
+    // check if there is a monster where the player is moving
     bool isMonsterAt(int x, int y);
     Monster* getMonsterAt(int x, int y);
     
+    // was an actor just attacked
     bool justAttacked();
     
-    void testPrint();
+    
+
     
 private:
     char m_map[18][70];

@@ -267,7 +267,7 @@ void Temple::setGameObject() {
         };
 
     for (int i = 0; i < num; i++) {
-        int randIndex = randInt(0, 7);
+        int randIndex = randInt(0, 6);
         string objectType = objectTypes[randIndex];
         
         GameObject* object = nullptr;
@@ -315,30 +315,7 @@ void Temple::setGameObjectSpawn() {
         }
     }
 }
-// sometimes do not have any objects
 
-// apply the effect of using the scrolls
-void Temple::applyScroll(GameObject* scroll) {
-    // teleportation object
-    if (scroll->getName() == "scroll of teleportation") {
-        int x = randInt(1, 69);
-        int y = randInt(1, 17);
-        while (!validMove(x, y)) {
-            x = randInt(1,69);
-            y = randInt(1, 17);
-        }
-        player->setXPos(x);
-        player->setYPos(y);
-    } else if (scroll->getName() == "scroll of armor") {
-        player->setArmor(randInt(1, 3));
-    } else if (scroll->getName() == "scroll of strength") {
-        player->setStrength(randInt(1, 3));
-    } else if (scroll->getName() == "croll of enhance health") {
-        player->playerMaxHP(randInt(3, 8));
-    } else if (scroll->getName() == "scroll of enhance dexterity") {
-        player->setDexterity(1);
-    }
-}
 
 // check if there is an object on the same position of an actor (to be able to 'g' command it into the inventory) 
 bool Temple::checkForObjects() {
@@ -382,15 +359,15 @@ Monster* Temple::getMonsterAt(int x, int y) {
     return nullptr;
 }
 
-void Temple::attack(Actor* attacker, Actor* defender, Weapon* weapon) {
-    int attackerPoints = attacker->getDexterity() + weapon->getDexterityBonus();
+void Temple::attack(Actor* attacker, Actor* defender, Weapon weapon) {
+    int attackerPoints = attacker->getDexterity() + weapon.getDexterityBonus();
     int defenderPoints = defender->getDexterity() + defender->getArmor();
     cout << "attackerPoints: " << attackerPoints << endl;
     cout << "defenderPoints: " << defenderPoints << endl;
  
     bool hit = false;
     if (randInt(1, attackerPoints) >= randInt(1, defenderPoints)) {
-        int damageAmount = randInt(0, attacker->getStrength() + weapon->getDamage() - 1);
+        int damageAmount = randInt(0, attacker->getStrength() + weapon.getDamage() - 1);
         cout << "damage amount: " << damageAmount << endl;
         defender->setHP(-damageAmount);
         hit = true;
@@ -398,15 +375,12 @@ void Temple::attack(Actor* attacker, Actor* defender, Weapon* weapon) {
     
     string result;
     string attackerName = attacker->getName();
-    string weaponAction = weapon->getAction();
-    string weaponName = weapon->getName();
+    string weaponAction = weapon.getAction();
+    string weaponName = weapon.getName();
     string defenderName = defender->getName();
     if (hit) {
         if (defender->getHP() <= 0) {
             attacks.push_back(attackerName + " " + weaponAction + " " + weaponName + " at " + defenderName + "dealing a final blow.");
-            if (attacks.size() > 2) {
-                attacks.erase(attacks.begin());
-            }
             return;
         } else {
             result = "hits";
@@ -415,13 +389,12 @@ void Temple::attack(Actor* attacker, Actor* defender, Weapon* weapon) {
         result = "misses";
     }
     attacks.push_back(attackerName +  " " + weaponAction + " " + weaponName + " at " + defenderName + " and " + result);
-    if (attacks.size() > 3) {
-        attacks.erase(attacks.begin());
-    }
 }
 
 void Temple::printActions() {
     for (size_t i = 0; i < attacks.size(); i++) {
         cout << attacks[i] << endl;
+        attacks.erase(attacks.begin());
     }
 }
+

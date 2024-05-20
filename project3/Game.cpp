@@ -27,7 +27,7 @@ void Game::play()
     board.setGameObjectSpawn();
     
     char c = '\0';
-    while (c != 'q') {
+    while (c != 'q' && player.getHP() != 0) {
 
         c = getCharacter();
         switch (c) {
@@ -94,12 +94,26 @@ void Game::play()
                     board.printActions();
                 }
                 break;
-            case 'w':
-            case 'r':
+            case 'c':
+                player.cheat();
+                board.printMap();
+                board.printStats();
+                break;
             case 'i':
                 player.printInventory();
                 break; 
+            case 'w':
+                player.weildWeapon();
+                board.printMap();
+                board.printStats();
+                player.printInventoryResult();
+                break;
+            case 'r':
+                player.readScroll();
             default:
+                board.printMap();
+                board.printStats(); 
+                player.printInventoryResult();
                 break;
         }
     }

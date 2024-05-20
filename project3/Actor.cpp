@@ -45,8 +45,8 @@ string Actor::getName() {
     return m_name;
 }
 
-Weapon* Actor::getWeapon() {
-    return &m_weapon;
+Weapon Actor::getWeapon() {
+    return m_weapon;
 }
 
 void Actor::setXPos(int n) {
@@ -60,24 +60,32 @@ void Actor::setYPos(int n) {
 void Actor::setHP(int n) {
     if (m_hit + n <= 99) {
         m_hit = m_hit + n;
+    } else {
+        m_hit = 99; 
     }
 }
 
 void Actor::setArmor(int n) {
     if (m_armor + n <= 99) {
         m_armor = m_armor + n;;
+    } else {
+        m_armor = 99;
     }
 }
 
 void Actor::setStrength(int n) {
     if (m_strength + n <= 99) {
         m_strength = m_strength + n;
+    } else {
+        m_strength = 99;
     }
 }
 
 void Actor::setDexterity(int n) {
     if (m_dexterity + n <= 99) {
         m_dexterity = m_dexterity + n;
+    } else {
+        m_dexterity = 99;
     }
 }
 
@@ -89,6 +97,9 @@ void Actor::setWeapon(Weapon weapon) {
     m_weapon = weapon;
 }
 
+void Actor::CHANGESTRENGTH(int n) {
+    m_strength = n;
+}
 
 
 

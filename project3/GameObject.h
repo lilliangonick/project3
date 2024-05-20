@@ -16,7 +16,7 @@ using namespace std;
 class GameObject {
 public:
     GameObject(string type, string name);
-    ~GameObject(); 
+    virtual ~GameObject(); 
     int getXPos();
     int getYPos();
     
