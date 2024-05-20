@@ -41,6 +41,9 @@ void Game::play()
                 }
                 board.printMap();
                 board.printStats();
+                if (board.justAttacked()) {
+                    board.printActions();
+                }
                 break;
             case ARROW_RIGHT:
                 if (!board.validMove(player.getXPos() + 1, player.getYPos())) {
@@ -51,6 +54,9 @@ void Game::play()
                 }
                 board.printMap();
                 board.printStats();
+                if (board.justAttacked()) {
+                    board.printActions();
+                }
                 break;
             case ARROW_UP:
                 if (!board.validMove(player.getXPos(), player.getYPos() - 1)) {
@@ -61,6 +67,9 @@ void Game::play()
                 }
                 board.printMap();
                 board.printStats();
+                if (board.justAttacked()) {
+                    board.printActions();
+                }
                 break;
             case ARROW_DOWN:
                 if (!board.validMove(player.getXPos(), player.getYPos() + 1)) {
@@ -71,6 +80,9 @@ void Game::play()
                 }
                 board.printMap();
                 board.printStats();
+                if (board.justAttacked()) {
+                    board.printActions();
+                }
                 break;
             case 'g':
                 if (board.checkForObjects()) {
@@ -78,6 +90,9 @@ void Game::play()
                 }
                 board.printMap();
                 board.printStats();
+                if (board.justAttacked()) {
+                    board.printActions();
+                }
                 break;
             case 'w':
             case 'r':
@@ -87,7 +102,6 @@ void Game::play()
             default:
                 break;
         }
-        
     }
 }
 

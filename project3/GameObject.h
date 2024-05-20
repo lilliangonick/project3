@@ -27,8 +27,8 @@ public:
     string getType(); 
     
 private:
-    string m_name;
     string m_type;
+    string m_name;
     int m_x;
     int m_y;
 

@@ -17,7 +17,7 @@
 using namespace std;
 
 // create temple (constructor)
-Temple::Temple(Player* pointer) : player(pointer), m_level(0) {
+Temple::Temple(Player* pointer) : player(pointer), m_level(0), m_justAttacked(false) {
     for (int i = 0; i < 18; i++) {
         for (int j = 0; j < 70; j++) {
             if (i == 0 || j == 0|| j == 69 || i == 17) {
@@ -59,19 +59,55 @@ void Temple::setPlayer(int x, int y) {
     m_map[y][x] = '@';
 }
 
+bool Temple::justAttacked() {
+    return m_justAttacked;
+}
+
 // see if the move is valid
 bool Temple::validMove(int xPos, int yPos) {
     if (m_map[yPos][xPos] == '#') {
         return false;
     }
-    if ( m_map[yPos][xPos] == '@' || m_map[yPos][xPos] == 'B' || m_map[yPos][xPos] == 'D' || m_map[yPos][xPos] == 'G' || m_map[yPos][xPos] == 'S') {
-        return false;
-    }
+//    if ( m_map[yPos][xPos] == '@' || m_map[yPos][xPos] == 'B' || m_map[yPos][xPos] == 'D' || m_map[yPos][xPos] == 'G' || m_map[yPos][xPos] == 'S') {
+//        return false;
+//    }
     return true;
 }
 
 // move the player based on a command
 void Temple::movePlayer(char c) {
+    m_justAttacked = false;
+    int newX = player->getXPos();
+    int newY = player->getYPos();
+
+    // Determine the new position based on the direction
+    if (c == ARROW_LEFT) {
+        newX -= 1;
+    } else if (c == ARROW_RIGHT) {
+        newX += 1;
+    } else if (c == ARROW_UP) {
+        newY -= 1;
+    } else if (c == ARROW_DOWN) {
+        newY += 1;
+    }
+    
+    // Check if there is a monster at the new position
+    if (isMonsterAt(newX, newY)) {
+        Monster* monster = getMonsterAt(newX, newY);
+        cout << "monster HP before: " << monster->getHP() << endl;
+        attack(player, monster, player->getWeapon());
+        cout << "monster HP: " << monster->getHP() << endl;
+        // If the monster is dead, remove it from the map and the monsters list
+        if (monster->getHP() <= 0) {
+            m_map[monster->getYPos()][monster->getXPos()] = ' ';
+            monsters.erase(std::remove(monsters.begin(), monsters.end(), monster), monsters.end());
+            delete monster; // Free the memory
+        }
+        m_justAttacked = true;
+        return; // Do not move the player
+    }
+
+    
     m_map[player->getYPos()][player->getXPos()] = ' ';
     // make sure player movement does not overwrite the objects
     if (isObjectAt(player->getXPos(), player->getYPos())) {
@@ -324,4 +360,68 @@ bool Temple::isObjectAt(int x, int y) {
         }
     }
     return false;
+}
+
+
+
+bool Temple::isMonsterAt(int x, int y) {
+    for (size_t i = 0; i < monsters.size(); i++) {
+        if (monsters[i]->getXPos() == x && monsters[i]->getYPos() == y) {
+            return true;
+        }
+    }
+    return false;
+}
+
+Monster* Temple::getMonsterAt(int x, int y) {
+    for (size_t i = 0; i < monsters.size(); i++) {
+        if (monsters[i]->getXPos() == x && monsters[i]->getYPos() == y) {
+            return monsters[i];
+        }
+    }
+    return nullptr;
+}
+
+void Temple::attack(Actor* attacker, Actor* defender, Weapon* weapon) {
+    int attackerPoints = attacker->getDexterity() + weapon->getDexterityBonus();
+    int defenderPoints = defender->getDexterity() + defender->getArmor();
+    cout << "attackerPoints: " << attackerPoints << endl;
+    cout << "defenderPoints: " << defenderPoints << endl;
+ 
+    bool hit = false;
+    if (randInt(1, attackerPoints) >= randInt(1, defenderPoints)) {
+        int damageAmount = randInt(0, attacker->getStrength() + weapon->getDamage() - 1);
+        cout << "damage amount: " << damageAmount << endl;
+        defender->setHP(-damageAmount);
+        hit = true;
+    }
+    
+    string result;
+    string attackerName = attacker->getName();
+    string weaponAction = weapon->getAction();
+    string weaponName = weapon->getName();
+    string defenderName = defender->getName();
+    if (hit) {
+        if (defender->getHP() <= 0) {
+            attacks.push_back(attackerName + " " + weaponAction + " " + weaponName + " at " + defenderName + "dealing a final blow.");
+            if (attacks.size() > 2) {
+                attacks.erase(attacks.begin());
+            }
+            return;
+        } else {
+            result = "hits";
+        }
+    } else {
+        result = "misses";
+    }
+    attacks.push_back(attackerName +  " " + weaponAction + " " + weaponName + " at " + defenderName + " and " + result);
+    if (attacks.size() > 3) {
+        attacks.erase(attacks.begin());
+    }
+}
+
+void Temple::printActions() {
+    for (size_t i = 0; i < attacks.size(); i++) {
+        cout << attacks[i] << endl;
+    }
 }

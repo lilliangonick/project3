@@ -12,9 +12,11 @@
 
 using namespace std; 
 
+class Actor;
 class Player;
 class Monster;
 class GameObject;
+class Weapon;
 
 class Temple {
 public:
@@ -24,6 +26,7 @@ public:
     void printMap();
     void move();
     void printStats();
+    void printActions();
     
     void setPlayerSpawn(); 
     void setMonsterSpawn();
@@ -47,12 +50,23 @@ public:
     bool checkForObjects();
     bool isObjectAt(int x, int y);
     
+    void attack(Actor* attacker, Actor* defender, Weapon* weapon);
+
+    bool isMonsterAt(int x, int y);
+    Monster* getMonsterAt(int x, int y);
+    
+    bool justAttacked();
+    
+    void testPrint();
+    
 private:
     char m_map[18][70];
-    int m_level;
     Player* player;
+    int m_level;
     vector<Monster*> monsters;
     vector<GameObject*> objects; 
+    vector<string> attacks;
+    bool m_justAttacked; 
 };
 
 #endif /* Temple_h */

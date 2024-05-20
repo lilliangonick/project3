@@ -45,8 +45,8 @@ string Actor::getName() {
     return m_name;
 }
 
-Weapon Actor::getWeapon() {
-    return m_weapon;
+Weapon* Actor::getWeapon() {
+    return &m_weapon;
 }
 
 void Actor::setXPos(int n) {
@@ -89,32 +89,6 @@ void Actor::setWeapon(Weapon weapon) {
     m_weapon = weapon;
 }
 
-void Actor::attack(Actor* attacker, Actor* defender, Weapon* weapon) {
-    int attackerPoints = attacker->getDexterity() + weapon->getDexterityBonus();
-    int defenderPoints = defender->getDexterity() + defender->getArmor();
-    
-    bool hit = false;
-    if (randInt(1, attackerPoints) >= randInt(1, defenderPoints)) {
-        int damageAmount = randInt(0, attacker->getStrength() + weapon->getDamage() - 1);
-        defender->setHP(defender->getHP() - damageAmount);
-        hit = true;
-    }
-    
-    string result;
-    if (hit) {
-       result = "hits";
-    } else {
-        result = "misses";
-    }
-    cout << attacker->getName() << " " << weapon->getName() << "at" << defender->getName() << "and" << result;
-}
-
-bool Actor::isDead() {
-    if (m_hit == 0) {
-        return true;
-    }
-    return false; 
-}
 
 
 
