@@ -7,9 +7,11 @@ using namespace std;
 
 // Implement these and other Game member functions you may have added.
 
-Game::Game(int goblinSmellDistance) : player(Player()), board(Temple(&player))
-{
-    
+Game::Game(int goblinSmellDistance) : m_goblinSmellDistance(goblinSmellDistance), player(Player()), board(Temple(&player))
+{}
+
+int Game::getGoblinSmellDistance() {
+    return m_goblinSmellDistance;
 }
 
 void Game::play()
@@ -122,9 +124,9 @@ void Game::play()
                 player.readScroll();
             // if invalid input, do not do anything 
             default:
+                cout << "invalid input" << endl; 
                 board.printMap();
                 board.printStats(); 
-                player.printInventoryResult();
                 break;
         }
         board.moveMonsters(); 
@@ -133,7 +135,6 @@ void Game::play()
         }
         
         if (player.getHP() <= 0) {
-            cout << "player dead" << endl;
             break;
         }
     }

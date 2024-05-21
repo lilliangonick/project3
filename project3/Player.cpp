@@ -22,9 +22,6 @@ Player::~Player() {
     for (vector<GameObject*>::iterator it = inventory.begin(); it != inventory.end(); it++) {
         delete *it; 
     }
-//    for (size_t i = 0; i < inventory.size(); i++) {
-//        delete inventory[i];
-//    }
 }
 // set PlayerHP
 void Player::setHP(int n) {
@@ -105,20 +102,22 @@ void Player::weildWeapon() {
     cout << "Character entered: " << c << endl;
 
     int index = c - 'a';
-    if (index >= 0 && index < inventory.size()) {
-        GameObject* selectedItem = inventory[index];
+    if (index < 0 || index >= inventory.size()) {
+        return;
+    }
 
-        // check if the selected item is a weapon
-        Weapon* weapon = dynamic_cast<Weapon*>(selectedItem);
-        if (weapon != nullptr) {
-            setWeapon(*weapon);
-            inventoryResult.push_back("You are wielding " + getWeapon().getName());
-        } else {
-        // if not, you can not weild a scroll
-            Scroll* scroll = dynamic_cast<Scroll*>(selectedItem);
-            if (scroll != nullptr) {
-                inventoryResult.push_back("You can't wield " + scroll->getName());
-            }
+    GameObject* selectedItem = inventory[index];
+
+    // check if the selected item is a weapon
+    Weapon* weapon = dynamic_cast<Weapon*>(selectedItem);
+    if (weapon != nullptr) {
+        setWeapon(*weapon);
+        inventoryResult.push_back("You are wielding " + getWeapon().getName());
+    } else {
+    // if not, you can not weild a scroll
+        Scroll* scroll = dynamic_cast<Scroll*>(selectedItem);
+        if (scroll != nullptr) {
+            inventoryResult.push_back("You can't wield " + scroll->getName());
         }
     }
 }
@@ -127,10 +126,10 @@ void Player::weildWeapon() {
 void Player::readScroll() {
     cout << "Inventory: " << endl;
     char firstChar = 'a';
-    for (size_t i = 0; i < inventory.size(); i++) {
-        cout << firstChar << ". " << inventory[i]->getName() << endl;
-        firstChar++;
-    }
+    for (vector<GameObject*>::iterator it = inventory.begin(); it != inventory.end(); ++it) {
+           cout << firstChar << ". " << (*it)->getName() << endl;
+           firstChar++;
+       }
 
     cout << "Enter your choice: ";
     char c = getCharacter();
@@ -162,6 +161,7 @@ void Player::readScroll() {
                     result = "\nYou feel like less of a klutz.";
                 }
                 inventoryResult.push_back("You read the scroll called " + scroll->getName() + result);
+                inventory.erase(inventory.begin() + index);
             }
         }
     }
@@ -178,6 +178,6 @@ vector<string> Player::getInventoryResults() {
 
 void Player::regainHP() {
     if (trueWithProbability(0.1)) {
-        setHP(1);
-    } 
+        Player::setHP(1);
+    }
 }

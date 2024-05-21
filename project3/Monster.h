@@ -18,8 +18,10 @@ public:
     Monster(string name, int xPos, int yPos, int hit, string weaponName, string actionString, int dexterityBonus, int damage, int armor, int strength, int dexterity, int smellRange);
     virtual ~Monster();
     
-    bool smell(Player* player);
+    virtual bool smell(Player* player);
     int getSmellRange();
+
+    
 private:
     bool m_isDead; 
     
@@ -30,26 +32,23 @@ private:
 class Bogeyman : public Monster {
 public:
     Bogeyman(int smellRange);
-    // 1/10 chance magic axe drop
 };
 
 class Snakewoman : public Monster {
 public:
     Snakewoman(int smellRange);
-    // 1/3 chance fangs drop
 };
 
 class Dragon : public Monster {
 public:
     Dragon(int smellRange);
     void heal();
-    // drop scroll
 };
 
 class Goblin : public Monster {
 public:
     Goblin(int smellRange);
-    // 1/3 chance fangs/axe drop
+    virtual bool smell(Player* player, int smellRange);
 };
 
 #endif /* Monster_h */

@@ -38,12 +38,6 @@ Temple::~Temple() {
     for (vector<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it) {
         delete *it;
     }
-//    for (size_t i = 0; i < monsters.size(); i++) {
-//        delete monsters[i];
-//    }
-//    for (size_t i = 0; i < objects.size(); i++) {
-//        delete objects[i];
-//    }
 }
 
 // display map
@@ -84,9 +78,14 @@ bool Temple::validMove(int xPos, int yPos) {
     if (m_map[yPos][xPos] == '#') {
         return false;
     }
-//    if ( m_map[yPos][xPos] == '@' || m_map[yPos][xPos] == 'B' || m_map[yPos][xPos] == 'D' || m_map[yPos][xPos] == 'G' || m_map[yPos][xPos] == 'S') {
-//        return false;
-//    }
+    return true;
+}
+
+// see if the move is valid
+bool Temple::validMonsterMove(int xPos, int yPos) {
+    if (m_map[yPos][xPos] == '#' || m_map[yPos][xPos] == 'B' || m_map[yPos][xPos] == 'S' || m_map[yPos][xPos] == 'D' || m_map[yPos][xPos] == 'G') {
+        return false;
+    }
     return true;
 }
 
@@ -114,31 +113,10 @@ void Temple::movePlayer(char c) {
         // If the monster is dead, remove it from the map and the monsters list
         if (monster->getHP() <= 0) {
             m_map[monster->getYPos()][monster->getXPos()] = ' ';
-//            vector<Monster*>::iterator it = find(monsters.begin(), monsters.end(), monster);
-//            if (it != monsters.end()) {
-//                delete *it;
-//            }
-//            monsters.erase(it);
-//            monsters.erase(std::remove(monsters.begin(), monsters.end(), monster), monsters.end());
         }
         m_justAttacked = true;
         return; // do not move the player
     }
-
-    
-//    m_map[player->getYPos()][player->getXPos()] = ' ';
-//    // make sure player movement does not overwrite the objects
-//    if (isObjectAt(player->getXPos(), player->getYPos())) {
-//        for (size_t i = 0; i < objects.size(); i++) {
-//            if (objects[i]->getXPos() == player->getXPos() && objects[i]->getYPos() == player->getYPos()) {
-//                if (objects[i]->getType() == "Scroll") {
-//                    m_map[objects[i]->getYPos()][objects[i]->getXPos()] = '?';
-//                } else {
-//                    m_map[objects[i]->getYPos()][objects[i]->getXPos()] = '(';
-//                }
-//            }
-//        }
-//    }
     
     m_map[player->getYPos()][player->getXPos()] = ' ';
     if (isObjectAt(player->getXPos(), player->getYPos())) {
@@ -404,14 +382,13 @@ void Temple::attack(Actor* attacker, Actor* defender, Weapon weapon) {
     
     if (defender->getHP() <= 0) {
         attacks.push_back(attackerName + " " + weaponAction + " " + weaponName + " at " + defenderName + " dealing a final blow.");
-        cout << "defender HP: " << defender->getHP() << endl;
         if (defender->isMonster()) {
             vector<Monster*>::iterator it = find(monsters.begin(), monsters.end(), defender);
             if (it != monsters.end()) {
                 delete *it;
                 monsters.erase(it);
             }
-        } // when snakewoman dies replays 2-3 times before disappearing
+        }
         return;
     }
     
@@ -429,13 +406,40 @@ void Temple::moveMonsters() {
         // move the bogeyman
         if ((*it)->getName() == "the Bogeyman") {
             if ((*it)->smell(player)) {
-                cout << "smell" << endl;
                 moveTowardsPlayer(*it, 'B');
             }
         } else if ((*it)->getName() == "the Snakewoman") {
             if ((*it)->smell(player)) {
-                cout << "smell" << endl;
                 moveTowardsPlayer(*it, 'S');
+            }
+        } else if ((*it)->getName() == "the Dragon") {
+            // dragos have a 1/10 chance of healing
+            if (trueWithProbability(0.1)) {
+                cout << "dragaon healed" << endl;
+                ((*it))->setHP(1);
+            }
+            
+            // if the monster is already next to the player, attack directly
+            if ((*it)->getXPos() + 1 == player->getXPos() && (*it)->getYPos() == player->getYPos()) {
+                attack((*it), player, (*it)->getWeapon());
+                m_justAttacked = true;
+                return;
+            } else if ((*it)->getXPos() - 1 == player->getXPos() && (*it)->getYPos() == player->getYPos()) {
+                attack((*it), player, (*it)->getWeapon());
+                m_justAttacked = true;
+                return;
+            } else if ((*it)->getXPos() == player->getXPos() && (*it)->getYPos() + 1 == player->getYPos()) {
+                attack((*it), player, (*it)->getWeapon());
+                m_justAttacked = true;
+                return;
+            } else if ((*it)->getXPos() == player->getXPos() && (*it)->getYPos() - 1 == player->getYPos()) {
+                attack((*it), player, (*it)->getWeapon());
+                m_justAttacked = true;
+                return;
+            }
+        } else if ((*it)->getName() == "the Goblin") {
+            if ((*it)->smell(player)) {
+                moveTowardsPlayer(*it, 'G');
             }
         }
     }
@@ -473,31 +477,34 @@ void Temple::moveTowardsPlayer(Monster* monster, char monsterChar) {
     int newMonsterXPos = monsterXPos;
     int newMonsterYPos = monsterYPos;
 
-    if (playerXPos > monsterXPos && validMove(monsterXPos + 1, monsterYPos)) {
+    if (playerXPos > monsterXPos && validMonsterMove(monsterXPos + 1, monsterYPos)) {
         newMonsterXPos = monsterXPos + 1;
-    } else if (playerXPos < monsterXPos && validMove(monsterXPos - 1, monsterYPos)) {
+    } else if (playerXPos < monsterXPos && validMonsterMove(monsterXPos - 1, monsterYPos)) {
         newMonsterXPos = monsterXPos - 1;
-    } else if (playerYPos > monsterYPos && validMove(monsterXPos, monsterYPos + 1)) {
+    } else if (playerYPos > monsterYPos && validMonsterMove(monsterXPos, monsterYPos + 1)) {
         newMonsterYPos = monsterYPos + 1;
-    } else if (playerYPos < monsterYPos && validMove(monsterXPos, monsterYPos - 1)) {
+    } else if (playerYPos < monsterYPos && validMonsterMove(monsterXPos, monsterYPos - 1)) {
         newMonsterYPos = monsterYPos - 1;
     }
  
     m_map[monsterYPos][monsterXPos] = ' '; // clear the old position
-    m_map[newMonsterYPos][newMonsterXPos] = monsterChar; // set the new position
-    monster->setXPos(newMonsterXPos);
-    monster->setYPos(newMonsterYPos);
-        
+    
     // make sure player movement does not overwrite the objects
     if (isObjectAt(monster->getXPos(), monster->getYPos())) {
-        for (size_t i = 0; i < objects.size(); i++) {
-            if (objects[i]->getXPos() == monster->getXPos() && objects[i]->getYPos() == monster->getYPos()) {
-                if (objects[i]->getType() == "Scroll") {
-                    m_map[objects[i]->getYPos()][objects[i]->getXPos()] = '?';
+        for (vector<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it) {
+            if ((*it)->getXPos() == monster->getXPos() && (*it)->getYPos() == monster->getYPos()) {
+                if ((*it)->getType() == "Scroll") {
+                    m_map[(*it)->getYPos()][(*it)->getXPos()] = '?';
                 } else {
-                    m_map[objects[i]->getYPos()][objects[i]->getXPos()] = '(';
+                    m_map[(*it)->getYPos()][(*it)->getXPos()] = '(';
                 }
             }
         }
     }
+    m_map[newMonsterYPos][newMonsterXPos] = monsterChar; // set the new position
+    monster->setXPos(newMonsterXPos);
+    monster->setYPos(newMonsterYPos);
+    
+    
 }
+

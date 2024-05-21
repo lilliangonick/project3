@@ -15,9 +15,11 @@ class Game
 {
 public:
     Game(int goblinSmellDistance);
+    int getGoblinSmellDistance(); 
     void play();
 private:
-    Player player; 
+    int m_goblinSmellDistance;
+    Player player;
     Temple board;
 };
 

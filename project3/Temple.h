@@ -37,6 +37,7 @@ public:
     // validate moves
     bool validMove(int xPos, int yPos);
     bool validMoveChar(char c);
+    bool validMonsterMove(int xPos, int yPos);
     
     // move player
     void setPlayer(int x, int y);
@@ -69,7 +70,7 @@ public:
     // move monsters based on the player
     void moveMonsters(); 
     void moveTowardsPlayer(Monster* monster, char monsterChar);
-    
+    void dropItem(Monster* monster, int x, int y);
     
 
     
