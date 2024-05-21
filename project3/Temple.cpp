@@ -35,9 +35,11 @@ Temple::~Temple() {
     for (vector<Monster*>::iterator it = monsters.begin(); it != monsters.end(); ++it) {
         delete *it;
     }
+    monsters.clear();
     for (vector<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it) {
         delete *it;
     }
+    objects.clear();
 }
 
 // display map
@@ -111,9 +113,9 @@ void Temple::movePlayer(char c) {
         Monster* monster = getMonsterAt(newX, newY);
         attack(player, monster, player->getWeapon());
         // If the monster is dead, remove it from the map and the monsters list
-        if (monster->getHP() <= 0) {
-            m_map[monster->getYPos()][monster->getXPos()] = ' ';
-        }
+//        if (monster->getHP() <= 0) {
+//            m_map[monster->getYPos()][monster->getXPos()] = ' ';
+//        }
         m_justAttacked = true;
         return; // do not move the player
     }
@@ -321,7 +323,7 @@ void Temple::setGameObjectSpawn() {
 
 // check if there is an object on the same position of an actor (to be able to 'g' command it into the inventory) 
 bool Temple::checkForObjects() {
-    for (auto it = objects.begin(); it != objects.end(); ++it) {
+    for (vector<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it) {
         if (player->getXPos() == (*it)->getXPos() && player->getYPos() == (*it)->getYPos()) {
             player->pickUpObject(*it);
             objects.erase(it);
@@ -382,6 +384,7 @@ void Temple::attack(Actor* attacker, Actor* defender, Weapon weapon) {
     
     if (defender->getHP() <= 0) {
         attacks.push_back(attackerName + " " + weaponAction + " " + weaponName + " at " + defenderName + " dealing a final blow.");
+        m_map[defender->getYPos()][defender->getXPos()] = ' ';
         if (defender->isMonster()) {
             vector<Monster*>::iterator it = find(monsters.begin(), monsters.end(), defender);
             if (it != monsters.end()) {
@@ -419,7 +422,7 @@ void Temple::moveMonsters() {
                 ((*it))->setHP(1);
             }
             
-            // if the monster is already next to the player, attack directly
+            // if the dragon is already next to the player, attack directly
             if ((*it)->getXPos() + 1 == player->getXPos() && (*it)->getYPos() == player->getYPos()) {
                 attack((*it), player, (*it)->getWeapon());
                 m_justAttacked = true;
