@@ -9,6 +9,7 @@
 #define Temple_h
 
 #include <vector>
+#include <string>
 
 using namespace std; 
 
@@ -23,12 +24,13 @@ public:
     Temple(Player* pointer);
     ~Temple();
              
+    //  printing actions to the dispplay
     void printMap();
-    void move();
     void printStats();
     void printActions();
     
-    void setPlayerSpawn(); 
+    // set the positions for the spawn of player, monsters, and objects
+    void setPlayerSpawn();
     void setMonsterSpawn();
     void setGameObjectSpawn();
     
@@ -44,9 +46,10 @@ public:
     void setMonster();
     void moveMonster();
     
-    // game objects
-    void setGameObject(); 
-//    void applyScroll(GameObject* scroll); 
+    // place game objects
+    void setGameObject();
+    
+//    void applyScroll(GameObject* scroll);
     bool checkForObjects();
     bool isObjectAt(int x, int y);
     
@@ -57,8 +60,15 @@ public:
     bool isMonsterAt(int x, int y);
     Monster* getMonsterAt(int x, int y);
     
+    // check if the player is where the monster is moving
+    bool isPlayerAt(int x, int y); 
+    
     // was an actor just attacked
     bool justAttacked();
+    
+    // move monsters based on the player
+    void moveMonsters(); 
+    void moveTowardsPlayer(Monster* monster, char monsterChar);
     
     
 

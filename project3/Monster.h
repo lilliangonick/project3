@@ -9,43 +9,46 @@
 #define Monster_h
 
 #include "Actor.h"
-//#include "Temple.h"
 #include <string>
+
+#include "Player.h"
 
 class Monster : public Actor {
 public:
-    Monster(string name, int xPos, int yPos, int hit, string weaponName, string actionString, int dexterityBonus, int damage, int armor, int strength, int dexterity);
+    Monster(string name, int xPos, int yPos, int hit, string weaponName, string actionString, int dexterityBonus, int damage, int armor, int strength, int dexterity, int smellRange);
     virtual ~Monster();
-    void handleTurn(); // ABC
-    void dropItem(); // will eventually return a weapon type 
-//    void setMonsterSpawn(Temple board);
+    
+    bool smell(Player* player);
+    int getSmellRange();
+private:
+    bool m_isDead; 
+    
+private:
+    int m_smellRange;
 };
 
 class Bogeyman : public Monster {
 public:
-    Bogeyman();
-    void smell();
+    Bogeyman(int smellRange);
     // 1/10 chance magic axe drop
 };
 
 class Snakewoman : public Monster {
 public:
-    Snakewoman();
-    void smell();
+    Snakewoman(int smellRange);
     // 1/3 chance fangs drop
 };
 
 class Dragon : public Monster {
 public:
-    Dragon();
+    Dragon(int smellRange);
     void heal();
     // drop scroll
 };
 
 class Goblin : public Monster {
 public:
-    Goblin();
-    void smell();
+    Goblin(int smellRange);
     // 1/3 chance fangs/axe drop
 };
 

@@ -12,11 +12,12 @@
 
 using namespace std;
 
-Actor::Actor(string name, int xPos, int yPos, int hit, string weaponName, string actionString, int dexterityBonus, int damage, int armor, int strength, int dexterity) : m_name(name), m_x(xPos), m_y(yPos), m_hit(hit), m_weapon(weaponName, actionString, dexterityBonus, damage), m_armor(armor), m_strength(strength), m_dexterity(dexterity), m_sleepTime(0) {}
+// construct ifno
+Actor::Actor(string name, int xPos, int yPos, int hit, string weaponName, string actionString, int dexterityBonus, int damage, int armor, int strength, int dexterity, bool isMonster) : m_name(name), m_x(xPos), m_y(yPos), m_hit(hit), m_weapon(weaponName, actionString, dexterityBonus, damage), m_armor(armor), m_strength(strength), m_dexterity(dexterity), m_sleepTime(0), m_isMonster(isMonster){}
 
 Actor::~Actor() {}
 
-// get and set actors attributes
+// get actor attributes
 int Actor::getXPos() {
     return m_x;
 }
@@ -49,6 +50,7 @@ Weapon Actor::getWeapon() {
     return m_weapon;
 }
 
+// set actor attributes
 void Actor::setXPos(int n) {
     m_x = n;
 }
@@ -101,6 +103,9 @@ void Actor::CHANGESTRENGTH(int n) {
     m_strength = n;
 }
 
+bool Actor::isMonster() {
+    return m_isMonster;
+}
 
 
 // TODO ideas

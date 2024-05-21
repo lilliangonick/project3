@@ -21,7 +21,8 @@ public:
     Player();
     virtual ~Player();
     
-    virtual void setHP(int n); 
+    // players can increase their max HP
+    virtual void setHP(int n);
     void playerMaxHP(int n);
     
     // player actions
@@ -30,6 +31,8 @@ public:
     
     void weildWeapon();
     void readScroll();
+    
+    void regainHP();
     
     // inventory stuff
     void printInventory();

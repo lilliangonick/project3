@@ -17,21 +17,24 @@ void Game::play()
     cout << "The game hasn't been implemented yet." << endl;
     cout << "Press q to exit game." << endl;
     
+    // spawn the player
     board.setPlayerSpawn();
     board.setPlayer(player.getXPos(), player.getYPos());
     
+    // spawn the monsters
     board.setMonster();
     board.setMonsterSpawn();
     
+    // spawn the game objects
     board.setGameObject();
     board.setGameObjectSpawn();
     
     char c = '\0';
-    while (c != 'q' && player.getHP() != 0) {
-
+    while (c != 'q') {
+        player.regainHP();
         c = getCharacter();
         switch (c) {
-                //TODO stops moving on x pos 17
+            // check if the desired position is valid, then reprint the display, stats (and action line)
             case ARROW_LEFT:
                 if (!board.validMove(player.getXPos() - 1, player.getYPos())) {
                     continue;
@@ -94,27 +97,44 @@ void Game::play()
                     board.printActions();
                 }
                 break;
+            // cheating increasings the players stats
             case 'c':
                 player.cheat();
                 board.printMap();
                 board.printStats();
                 break;
+            // print the inventory
             case 'i':
+                clearScreen();
                 player.printInventory();
                 break; 
+            // print inventory, then weild a weapon
             case 'w':
+                clearScreen();
                 player.weildWeapon();
                 board.printMap();
                 board.printStats();
                 player.printInventoryResult();
                 break;
+            // print inventory, then read  a scroll
             case 'r':
+                clearScreen();
                 player.readScroll();
+            // if invalid input, do not do anything 
             default:
                 board.printMap();
                 board.printStats(); 
                 player.printInventoryResult();
                 break;
+        }
+        board.moveMonsters(); 
+        if (board.justAttacked()) {
+            board.printActions();
+        }
+        
+        if (player.getHP() <= 0) {
+            cout << "player dead" << endl;
+            break;
         }
     }
 }

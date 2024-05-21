@@ -16,7 +16,7 @@ using namespace std;
 
 class Actor {
 public:
-    Actor(string name, int xPos, int yPos, int hit, string weaponName, string actionString, int dexterityBonus, int damage, int armor, int strength, int dexterity);
+    Actor(string name, int xPos, int yPos, int hit, string weaponName, string actionString, int dexterityBonus, int damage, int armor, int strength, int dexterity, bool isMonster);
     virtual ~Actor(); 
     
     // get actor attributes
@@ -41,18 +41,14 @@ public:
     void setWeapon(Weapon weapon);
     void CHANGESTRENGTH(int n);
     
-    
-    // display messages after actor action
-    void attackResult(); // all actors can attack
-    
-    void attack(Actor* attacker, Actor* defender, Weapon weapon);
-    bool isDead(); // initially false
+    bool isMonster(); 
     
 private:
     string m_name;
     int m_x;
     int m_y;
     int m_hit; // int 0 - 99
+    Weapon m_weapon;
     string weaponName;
     string actionString;
     int dexterityBonus;
@@ -61,7 +57,7 @@ private:
     int m_strength; // int 0 - 99
     int m_dexterity; // int 0 - 99
     int m_sleepTime;  // int 0 - 9
-    Weapon m_weapon;
+    bool m_isMonster;
 
 };
 

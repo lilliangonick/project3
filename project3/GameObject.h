@@ -17,9 +17,12 @@ class GameObject {
 public:
     GameObject(string type, string name);
     virtual ~GameObject(); 
+    
+    // object getters
     int getXPos();
     int getYPos();
     
+    // object setters
     void setXPos(int n);
     void setYPos(int n);
     
@@ -34,9 +37,10 @@ private:
 
 };
 
+// weapons are a type of object
 class Weapon : public GameObject {
 public:
-    Weapon(string name, string actionString, int dexterityBonus, int damage); 
+    Weapon(string name, string actionString, int dexterityBonus, int damage);
     string getAction();
     int getDexterityBonus();
     int getDamage();
@@ -47,6 +51,7 @@ private:
     int m_damage;
 };
 
+// scrolls are a type of object
 class Scroll : public GameObject {
 public:
     Scroll(string name);

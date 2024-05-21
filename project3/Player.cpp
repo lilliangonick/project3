@@ -12,16 +12,19 @@
 using namespace std;
 
 // constructor
-Player::Player() : Actor("Player", 0, 0, 20, "short sword", "slashes", 0, 2, 2, 2, 2), m_maxHP(20) {
-    Weapon* initialWeapon = new Weapon("short sword", "slashes", 0, 2);
+Player::Player() : Actor("Player", 0, 0, 20, "short sword", "slashes", 0, 2, 2, 2, 2, false), m_maxHP(20) {
+    GameObject* initialWeapon = new Weapon("short sword", "slashes", 0, 2);
     inventory.push_back(initialWeapon);
 }
 
 // destructor
 Player::~Player() {
-    for (size_t i = 0; i < inventory.size(); i++) {
-        delete inventory[i];
+    for (vector<GameObject*>::iterator it = inventory.begin(); it != inventory.end(); it++) {
+        delete *it; 
     }
+//    for (size_t i = 0; i < inventory.size(); i++) {
+//        delete inventory[i];
+//    }
 }
 // set PlayerHP
 void Player::setHP(int n) {
@@ -120,6 +123,7 @@ void Player::weildWeapon() {
     }
 }
 
+// apply the effects of reading a scroll
 void Player::readScroll() {
     cout << "Inventory: " << endl;
     char firstChar = 'a';
@@ -171,23 +175,9 @@ void Player::printInventoryResult() {
 vector<string> Player::getInventoryResults() {
     return inventoryResult;
 }
-// You read the scroll called scroll of strength.
-// Your muscles bulge.
 
-// You can't read a short sword
-
-// You can't wield scroll of enhance dexterity
-
-// You are wielding short sword
-
-// You pick up a scroll called scroll of enhance health
-
-// You read the scroll called scroll of enhance health
-// You feel your heart beating stronger.
-
-
-// You read the scroll called scroll of enhance dexterity
-// You feel like less of a klutz.
-
-// You read the scroll called scroll of enhance armor
-// Your armor glows blue.
+void Player::regainHP() {
+    if (trueWithProbability(0.1)) {
+        setHP(1);
+    } 
+}

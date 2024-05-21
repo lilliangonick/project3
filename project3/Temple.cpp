@@ -13,6 +13,7 @@
 #include <vector>
 #include <iostream>
 #include <typeinfo>
+#include <algorithm>
 
 using namespace std;
 
@@ -31,12 +32,18 @@ Temple::Temple(Player* pointer) : player(pointer), m_level(0), m_justAttacked(fa
 
 // destructor (deallocate memory)
 Temple::~Temple() {
-    for (size_t i = 0; i < monsters.size(); i++) {
-        delete monsters[i];
+    for (vector<Monster*>::iterator it = monsters.begin(); it != monsters.end(); ++it) {
+        delete *it;
     }
-    for (size_t i = 0; i < objects.size(); i++) {
-        delete objects[i];
+    for (vector<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it) {
+        delete *it;
     }
+//    for (size_t i = 0; i < monsters.size(); i++) {
+//        delete monsters[i];
+//    }
+//    for (size_t i = 0; i < objects.size(); i++) {
+//        delete objects[i];
+//    }
 }
 
 // display map
@@ -52,6 +59,15 @@ void Temple::printMap() {
 // display player stats
 void Temple::printStats() {
     cout << "Level: " << m_level << ", Hit points: " << player->getHP() << ", Armor: " << player->getArmor() << ", Strength: " << player->getStrength() << ", Dexterity: " << player->getDexterity() << endl << endl; 
+}
+
+void Temple::printActions() {
+    vector<string>::iterator it = attacks.begin();
+    for (; it != attacks.end(); ++it) {
+        cout << *it << endl;
+    }
+    // erase all attacks up to the last index printed
+    attacks.erase(attacks.begin(), it);
 }
 
 // set player icon
@@ -80,7 +96,7 @@ void Temple::movePlayer(char c) {
     int newX = player->getXPos();
     int newY = player->getYPos();
 
-    // Determine the new position based on the direction
+    // determine the new position based on the direction
     if (c == ARROW_LEFT) {
         newX -= 1;
     } else if (c == ARROW_RIGHT) {
@@ -91,47 +107,55 @@ void Temple::movePlayer(char c) {
         newY += 1;
     }
     
-    // Check if there is a monster at the new position
+    // check if there is a monster at the new position
     if (isMonsterAt(newX, newY)) {
         Monster* monster = getMonsterAt(newX, newY);
-        cout << "monster HP before: " << monster->getHP() << endl;
         attack(player, monster, player->getWeapon());
-        cout << "monster HP: " << monster->getHP() << endl;
         // If the monster is dead, remove it from the map and the monsters list
         if (monster->getHP() <= 0) {
             m_map[monster->getYPos()][monster->getXPos()] = ' ';
-            monsters.erase(std::remove(monsters.begin(), monsters.end(), monster), monsters.end());
-            delete monster; // Free the memory
+//            vector<Monster*>::iterator it = find(monsters.begin(), monsters.end(), monster);
+//            if (it != monsters.end()) {
+//                delete *it;
+//            }
+//            monsters.erase(it);
+//            monsters.erase(std::remove(monsters.begin(), monsters.end(), monster), monsters.end());
         }
         m_justAttacked = true;
-        return; // Do not move the player
+        return; // do not move the player
     }
 
     
+//    m_map[player->getYPos()][player->getXPos()] = ' ';
+//    // make sure player movement does not overwrite the objects
+//    if (isObjectAt(player->getXPos(), player->getYPos())) {
+//        for (size_t i = 0; i < objects.size(); i++) {
+//            if (objects[i]->getXPos() == player->getXPos() && objects[i]->getYPos() == player->getYPos()) {
+//                if (objects[i]->getType() == "Scroll") {
+//                    m_map[objects[i]->getYPos()][objects[i]->getXPos()] = '?';
+//                } else {
+//                    m_map[objects[i]->getYPos()][objects[i]->getXPos()] = '(';
+//                }
+//            }
+//        }
+//    }
+    
     m_map[player->getYPos()][player->getXPos()] = ' ';
-    // make sure player movement does not overwrite the objects
     if (isObjectAt(player->getXPos(), player->getYPos())) {
-        for (size_t i = 0; i < objects.size(); i++) {
-            if (objects[i]->getXPos() == player->getXPos() && objects[i]->getYPos() == player->getYPos()) {
-                if (objects[i]->getType() == "Scroll") {
-                    m_map[objects[i]->getYPos()][objects[i]->getXPos()] = '?';
+        for (vector<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it) {
+            if ((*it)->getXPos() == player->getXPos() && (*it)->getYPos() == player->getYPos()) {
+                if ((*it)->getType() == "Scroll") {
+                    m_map[(*it)->getYPos()][(*it)->getXPos()] = '?';
                 } else {
-                    m_map[objects[i]->getYPos()][objects[i]->getXPos()] = '(';
+                    m_map[(*it)->getYPos()][(*it)->getXPos()] = '(';
                 }
             }
         }
     }
-    if (c == ARROW_LEFT) {
-        player->Actor::setXPos(player->getXPos() - 1);
-    } else if (c == ARROW_RIGHT) {
-        player->Actor::setXPos(player->getXPos() + 1);
-    } else if (c == ARROW_UP) {
-        player->Actor::setYPos(player->getYPos() - 1);
-    } else if (c == ARROW_DOWN){
-        player->Actor::setYPos(player->getYPos() + 1);
-    } else {
-        cout << "BAD";  // REMOVE BEFORE SUBMIT
-    }
+    
+    // Move the player to the new position
+    player->Actor::setXPos(newX);
+    player->Actor::setYPos(newY);
     setPlayer(player->getXPos(), player->getYPos());
 }
 
@@ -149,24 +173,24 @@ void Temple::setPlayerSpawn() {
 
 // set spawn of the monsters
 void Temple::setMonsterSpawn() {
-    for (size_t i = 0; i < monsters.size(); i++) {
+    for (vector<Monster*>::iterator it = monsters.begin(); it != monsters.end(); ++it) {
         int x = randInt(1, 69);
         int y = randInt(1, 17);
         while (!validMove(x, y)) {
-            x = randInt(1,69);
+            x = randInt(1, 69);
             y = randInt(1, 17);
         }
-        monsters[i]->setXPos(x);
-        monsters[i]->setYPos(y);
-        Monster& monster = *monsters[i];  // Dereference the pointer once
+        (*it)->setXPos(x);
+        (*it)->setYPos(y);
+        Monster& monster = **it;  // Dereference the iterator and the pointer
         if (typeid(monster) == typeid(Snakewoman)) {
-            m_map[monsters[i]->getYPos()][monsters[i]->getXPos()] = 'S';
+            m_map[monster.getYPos()][monster.getXPos()] = 'S';
         } else if (typeid(monster) == typeid(Goblin)) {
-            m_map[monsters[i]->getYPos()][monsters[i]->getXPos()] = 'G';
+            m_map[monster.getYPos()][monster.getXPos()] = 'G';
         } else if (typeid(monster) == typeid(Bogeyman)) {
-            m_map[monsters[i]->getYPos()][monsters[i]->getXPos()] = 'B';
+            m_map[monster.getYPos()][monster.getXPos()] = 'B';
         } else if (typeid(monster) == typeid(Dragon)) {
-            m_map[monsters[i]->getYPos()][monsters[i]->getXPos()] = 'D';
+            m_map[monster.getYPos()][monster.getXPos()] = 'D';
         }
     }
 }
@@ -180,10 +204,10 @@ void Temple::setMonster() {
             Monster* monster = nullptr;
             int rand = randInt(0, 1);
                 if (rand == 0) {
-                    monster = new Snakewoman();
+                    monster = new Snakewoman(3);
                     monsters.push_back(monster);
                 } else if (rand == 1) {
-                    monster = new Goblin();
+                    monster = new Goblin(15);
                     monsters.push_back(monster);
                 }
         }
@@ -193,10 +217,10 @@ void Temple::setMonster() {
             Monster* monster = nullptr;
             int rand = randInt(0, 1);
                 if (rand == 0) {
-                    monster = new Snakewoman();
+                    monster = new Snakewoman(3);
                     monsters.push_back(monster);
                 } else if (rand == 1) {
-                    monster = new Goblin();
+                    monster = new Goblin(15);
                     monsters.push_back(monster);
                 }
         }
@@ -206,13 +230,13 @@ void Temple::setMonster() {
             Monster* monster = nullptr;
             int rand = randInt(0, 2);
                 if (rand == 0) {
-                    monster = new Snakewoman();
+                    monster = new Snakewoman(3);
                     monsters.push_back(monster);
                 } else if (rand == 1) {
-                    monster = new Goblin();
+                    monster = new Goblin(15);
                     monsters.push_back(monster);
                 } else if (rand == 2) {
-                    monster = new Bogeyman();
+                    monster = new Bogeyman(5);
                     monsters.push_back(monster);
                 }
         }
@@ -222,16 +246,16 @@ void Temple::setMonster() {
             Monster* monster = nullptr;
             int rand = randInt(0, 3);
                 if (rand == 0) {
-                    monster = new Snakewoman();
+                    monster = new Snakewoman(3);
                     monsters.push_back(monster);
                 } else if (rand == 1) {
-                    monster = new Goblin();
+                    monster = new Goblin(15);
                     monsters.push_back(monster);
                 } else if (rand == 2) {
-                    monster = new Bogeyman();
+                    monster = new Bogeyman(5);
                     monsters.push_back(monster);
                 } else if (rand == 3) {
-                    monster = new Dragon();
+                    monster = new Dragon(0);
                     monsters.push_back(monster);
                 }
         }
@@ -241,16 +265,16 @@ void Temple::setMonster() {
             Monster* monster = nullptr;
             int rand = randInt(0, 3);
                 if (rand == 0) {
-                    monster = new Snakewoman();
+                    monster = new Snakewoman(3);
                     monsters.push_back(monster);
                 } else if (rand == 1) {
-                    monster = new Goblin();
+                    monster = new Goblin(15);
                     monsters.push_back(monster);
                 } else if (rand == 2) {
-                    monster = new Bogeyman();
+                    monster = new Bogeyman(5);
                     monsters.push_back(monster);
                 } else if (rand == 3) {
-                    monster = new Dragon();
+                    monster = new Dragon(0);
                     monsters.push_back(monster);
                 }
         }
@@ -298,20 +322,20 @@ void Temple::setGameObject() {
 
 // set the positions of the GameObjects (at the start of the level)
 void Temple::setGameObjectSpawn() {
-    for (size_t i = 0; i < objects.size(); i++) {
+    for (vector<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it) {
         int x = randInt(1, 69);
         int y = randInt(1, 17);
         while (!validMove(x, y)) {
-            x = randInt(1,69);
+            x = randInt(1, 69);
             y = randInt(1, 17);
         }
-        objects[i]->setXPos(x);
-        objects[i]->setYPos(y);
-        
-        if (objects[i]->getName() == "scroll of teleportation" || objects[i]->getName() == "scroll of armor" || objects[i]->getName() == "scroll of strength" || objects[i]->getName() == "scroll of enhance health" || objects[i]->getName() == "scroll of enhance dexterity") {
-            m_map[objects[i]->getYPos()][objects[i]->getXPos()] = '?';
+        (*it)->setXPos(x);
+        (*it)->setYPos(y);
+
+        if ((*it)->getName() == "scroll of teleportation" || (*it)->getName() == "scroll of armor" || (*it)->getName() == "scroll of strength" || (*it)->getName() == "scroll of enhance health" || (*it)->getName() == "scroll of enhance dexterity") {
+            m_map[(*it)->getYPos()][(*it)->getXPos()] = '?';
         } else {
-            m_map[objects[i]->getYPos()][objects[i]->getXPos()] = '(';
+            m_map[(*it)->getYPos()][(*it)->getXPos()] = '(';
         }
     }
 }
@@ -319,14 +343,14 @@ void Temple::setGameObjectSpawn() {
 
 // check if there is an object on the same position of an actor (to be able to 'g' command it into the inventory) 
 bool Temple::checkForObjects() {
-    for (size_t i = 0; i < objects.size(); i++) {
-        if (player->getXPos() == objects[i]->getXPos() && player->getYPos() == objects[i]->getYPos()) {
-            player->pickUpObject(objects[i]);
-            objects.erase(objects.begin() + i);
-            return true; 
+    for (auto it = objects.begin(); it != objects.end(); ++it) {
+        if (player->getXPos() == (*it)->getXPos() && player->getYPos() == (*it)->getYPos()) {
+            player->pickUpObject(*it);
+            objects.erase(it);
+            return true;
         }
     }
-    return false; 
+    return false;
 }
 
 // check the position of each object in the inventory
@@ -340,35 +364,34 @@ bool Temple::isObjectAt(int x, int y) {
 }
 
 
-
+// check if there is monster where the player wants to go
 bool Temple::isMonsterAt(int x, int y) {
-    for (size_t i = 0; i < monsters.size(); i++) {
-        if (monsters[i]->getXPos() == x && monsters[i]->getYPos() == y) {
+    for (vector<Monster*>::iterator it = monsters.begin(); it != monsters.end(); ++it) {
+        if ((*it)->getXPos() == x && (*it)->getYPos() == y) {
             return true;
         }
     }
     return false;
 }
 
+// if there is a monster where the player wants to move, return a pointer to that monster
 Monster* Temple::getMonsterAt(int x, int y) {
-    for (size_t i = 0; i < monsters.size(); i++) {
-        if (monsters[i]->getXPos() == x && monsters[i]->getYPos() == y) {
-            return monsters[i];
+    for (vector<Monster*>::iterator it = monsters.begin(); it != monsters.end(); ++it) {
+        if ((*it)->getXPos() == x && (*it)->getYPos() == y) {
+            return *it;
         }
     }
     return nullptr;
 }
 
+// let one actor attack another
 void Temple::attack(Actor* attacker, Actor* defender, Weapon weapon) {
     int attackerPoints = attacker->getDexterity() + weapon.getDexterityBonus();
     int defenderPoints = defender->getDexterity() + defender->getArmor();
-    cout << "attackerPoints: " << attackerPoints << endl;
-    cout << "defenderPoints: " << defenderPoints << endl;
  
     bool hit = false;
     if (randInt(1, attackerPoints) >= randInt(1, defenderPoints)) {
         int damageAmount = randInt(0, attacker->getStrength() + weapon.getDamage() - 1);
-        cout << "damage amount: " << damageAmount << endl;
         defender->setHP(-damageAmount);
         hit = true;
     }
@@ -378,23 +401,103 @@ void Temple::attack(Actor* attacker, Actor* defender, Weapon weapon) {
     string weaponAction = weapon.getAction();
     string weaponName = weapon.getName();
     string defenderName = defender->getName();
+    
+    if (defender->getHP() <= 0) {
+        attacks.push_back(attackerName + " " + weaponAction + " " + weaponName + " at " + defenderName + " dealing a final blow.");
+        cout << "defender HP: " << defender->getHP() << endl;
+        if (defender->isMonster()) {
+            vector<Monster*>::iterator it = find(monsters.begin(), monsters.end(), defender);
+            if (it != monsters.end()) {
+                delete *it;
+                monsters.erase(it);
+            }
+        } // when snakewoman dies replays 2-3 times before disappearing
+        return;
+    }
+    
     if (hit) {
-        if (defender->getHP() <= 0) {
-            attacks.push_back(attackerName + " " + weaponAction + " " + weaponName + " at " + defenderName + "dealing a final blow.");
-            return;
-        } else {
-            result = "hits";
-        }
+        result = "hits";
     } else {
         result = "misses";
     }
     attacks.push_back(attackerName +  " " + weaponAction + " " + weaponName + " at " + defenderName + " and " + result);
 }
 
-void Temple::printActions() {
-    for (size_t i = 0; i < attacks.size(); i++) {
-        cout << attacks[i] << endl;
-        attacks.erase(attacks.begin());
+// move the monsters based on the position of the player
+void Temple::moveMonsters() {
+    for (vector<Monster*>::iterator it = monsters.begin(); it != monsters.end(); ++it) {
+        // move the bogeyman
+        if ((*it)->getName() == "the Bogeyman") {
+            if ((*it)->smell(player)) {
+                cout << "smell" << endl;
+                moveTowardsPlayer(*it, 'B');
+            }
+        } else if ((*it)->getName() == "the Snakewoman") {
+            if ((*it)->smell(player)) {
+                cout << "smell" << endl;
+                moveTowardsPlayer(*it, 'S');
+            }
+        }
     }
 }
 
+// calculate which step to move towars the player
+void Temple::moveTowardsPlayer(Monster* monster, char monsterChar) {
+    m_justAttacked = false;
+    int playerXPos = player->getXPos();
+    int playerYPos = player->getYPos();
+    int monsterXPos = monster->getXPos();
+    int monsterYPos = monster->getYPos();
+    
+    // if the monster is already next to the player, attack directly
+    if (monsterXPos + 1 == playerXPos && monsterYPos == playerYPos) {
+        attack(monster, player, monster->getWeapon());
+        m_justAttacked = true;
+        return;
+    } else if (monsterXPos - 1 == playerXPos && monsterYPos == playerYPos) {
+        attack(monster, player, monster->getWeapon());
+        m_justAttacked = true;
+        return;
+    } else if (monsterXPos == playerXPos && monsterYPos + 1 == playerYPos) {
+        attack(monster, player, monster->getWeapon());
+        m_justAttacked = true;
+        return;
+    } else if (monsterXPos == playerXPos && monsterYPos - 1 == playerYPos) {
+        attack(monster, player, monster->getWeapon());
+        m_justAttacked = true;
+        return;
+    }
+    
+
+    // variables to store new position
+    int newMonsterXPos = monsterXPos;
+    int newMonsterYPos = monsterYPos;
+
+    if (playerXPos > monsterXPos && validMove(monsterXPos + 1, monsterYPos)) {
+        newMonsterXPos = monsterXPos + 1;
+    } else if (playerXPos < monsterXPos && validMove(monsterXPos - 1, monsterYPos)) {
+        newMonsterXPos = monsterXPos - 1;
+    } else if (playerYPos > monsterYPos && validMove(monsterXPos, monsterYPos + 1)) {
+        newMonsterYPos = monsterYPos + 1;
+    } else if (playerYPos < monsterYPos && validMove(monsterXPos, monsterYPos - 1)) {
+        newMonsterYPos = monsterYPos - 1;
+    }
+ 
+    m_map[monsterYPos][monsterXPos] = ' '; // clear the old position
+    m_map[newMonsterYPos][newMonsterXPos] = monsterChar; // set the new position
+    monster->setXPos(newMonsterXPos);
+    monster->setYPos(newMonsterYPos);
+        
+    // make sure player movement does not overwrite the objects
+    if (isObjectAt(monster->getXPos(), monster->getYPos())) {
+        for (size_t i = 0; i < objects.size(); i++) {
+            if (objects[i]->getXPos() == monster->getXPos() && objects[i]->getYPos() == monster->getYPos()) {
+                if (objects[i]->getType() == "Scroll") {
+                    m_map[objects[i]->getYPos()][objects[i]->getXPos()] = '?';
+                } else {
+                    m_map[objects[i]->getYPos()][objects[i]->getXPos()] = '(';
+                }
+            }
+        }
+    }
+}
