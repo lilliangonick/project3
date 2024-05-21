@@ -92,8 +92,8 @@ void Player::cheat() {
 void Player::weildWeapon() {
     cout << "Inventory: " << endl;
     char firstChar = 'a';
-    for (size_t i = 0; i < inventory.size(); i++) {
-        cout << firstChar << ". " << inventory[i]->getName() << endl;
+    for (vector<GameObject*>::iterator it = inventory.begin(); it != inventory.end(); ++it) {
+        cout << firstChar << ". " << (*it)->getName() << endl;
         firstChar++;
     }
 
@@ -101,23 +101,27 @@ void Player::weildWeapon() {
     char c = getCharacter();
     cout << "Character entered: " << c << endl;
 
+
     int index = c - 'a';
-    if (index < 0 || index >= inventory.size()) {
+    
+    if (index < 0 || index > inventory.size() - 1) {
         return;
     }
-
-    GameObject* selectedItem = inventory[index];
-
-    // check if the selected item is a weapon
-    Weapon* weapon = dynamic_cast<Weapon*>(selectedItem);
-    if (weapon != nullptr) {
-        setWeapon(*weapon);
-        inventoryResult.push_back("You are wielding " + getWeapon().getName());
-    } else {
-    // if not, you can not weild a scroll
-        Scroll* scroll = dynamic_cast<Scroll*>(selectedItem);
-        if (scroll != nullptr) {
-            inventoryResult.push_back("You can't wield " + scroll->getName());
+    
+    if (index >= 0 && index < inventory.size()) {
+        GameObject* selectedItem = inventory[index];
+        
+        // check if the selected item is a weapon
+        Weapon* weapon = dynamic_cast<Weapon*>(selectedItem);
+        if (weapon != nullptr) {
+            setWeapon(*weapon);
+            inventoryResult.push_back("You are wielding " + selectedItem->getName());
+        } else {
+            // if not, you can not weild a scroll
+            Scroll* scroll = dynamic_cast<Scroll*>(selectedItem);
+            if (scroll != nullptr) {
+                inventoryResult.push_back("You can't wield " + scroll->getName());
+            }
         }
     }
 }
@@ -142,7 +146,7 @@ void Player::readScroll() {
         // check if the selected item is a weapon (you can not read a weapon)
         Weapon* weapon = dynamic_cast<Weapon*>(selectedItem);
         if (weapon != nullptr) {
-            inventoryResult.push_back("You can't read a " + getWeapon().getName());
+            inventoryResult.push_back("You can't read a " + selectedItem->getName());
         } else {
         // you can read a scroll
             Scroll* scroll = dynamic_cast<Scroll*>(selectedItem);
@@ -168,8 +172,10 @@ void Player::readScroll() {
 }
 
 void Player::printInventoryResult() {
-    cout << inventoryResult[0] << endl;
-    inventoryResult.erase(inventoryResult.begin());
+    if (inventoryResult.size() != 0) {
+        cout << inventoryResult[0] << endl;
+        inventoryResult.erase(inventoryResult.begin());
+    }
 }
 
 vector<string> Player::getInventoryResults() {

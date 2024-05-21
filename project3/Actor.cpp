@@ -46,6 +46,10 @@ string Actor::getName() {
     return m_name;
 }
 
+int Actor::getSleepTime() {
+    return m_sleepTime;
+}
+
 Weapon Actor::getWeapon() {
     return m_weapon;
 }
@@ -107,6 +111,14 @@ bool Actor::isMonster() {
     return m_isMonster;
 }
 
+// sleeping functionality
+//bool isSleeping() {
+//    if (m_sleepTime > 0) {
+//        return true;
+//    } else {
+//        return false; 
+//    }
+//}
 
 // TODO ideas
 // inventory class with a inventory pointer to the player

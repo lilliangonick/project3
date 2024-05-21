@@ -122,9 +122,12 @@ void Game::play()
             case 'r':
                 clearScreen();
                 player.readScroll();
-            // if invalid input, do not do anything 
+                board.printMap();
+                board.printStats();
+                player.printInventoryResult();
+                break;
+            // if invalid input, do not do anything
             default:
-                cout << "invalid input" << endl; 
                 board.printMap();
                 board.printStats(); 
                 break;

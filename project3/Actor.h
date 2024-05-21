@@ -43,6 +43,9 @@ public:
     
     bool isMonster(); 
     
+    // deal with sleeping functionality
+    bool isSleeping();
+    
 private:
     string m_name;
     int m_x;

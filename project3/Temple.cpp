@@ -326,7 +326,7 @@ bool Temple::checkForObjects() {
     for (vector<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it) {
         if (player->getXPos() == (*it)->getXPos() && player->getYPos() == (*it)->getYPos()) {
             player->pickUpObject(*it);
-            objects.erase(it);
+            it = objects.erase(it);
             return true;
         }
     }
