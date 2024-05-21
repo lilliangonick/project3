@@ -96,7 +96,11 @@ void Actor::setDexterity(int n) {
 }
 
 void Actor::setSleepTime(int n) {
-    m_sleepTime = m_sleepTime + n;
+    if (m_sleepTime + n <= 9) {
+        m_sleepTime = m_sleepTime + n;
+    } else {
+        m_sleepTime = 9;
+    }
 }
 
 void Actor::setWeapon(Weapon weapon) {
@@ -112,14 +116,26 @@ bool Actor::isMonster() {
 }
 
 // sleeping functionality
-//bool isSleeping() {
-//    if (m_sleepTime > 0) {
-//        return true;
-//    } else {
-//        return false; 
-//    }
-//}
+bool Actor::isSleeping() {
+    if (m_sleepTime > 0) {
+        return true;
+    } else {
+        return false; 
+    }
+}
 
+void Actor::magicFangsEffect() {
+    if (trueWithProbability(0.2)) {
+        int sleepLength = randInt(2, 6);
+        if (m_sleepTime < sleepLength) {
+            m_sleepTime = sleepLength;
+        }
+    }
+}
+
+void Actor::decreaseSleepTime() {
+    m_sleepTime--; 
+}
 // TODO ideas
 // inventory class with a inventory pointer to the player
 // in board class put a vector that contains all mosnters so you know wehre they are 

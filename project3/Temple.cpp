@@ -93,6 +93,13 @@ bool Temple::validMonsterMove(int xPos, int yPos) {
 
 // move the player based on a command
 void Temple::movePlayer(char c) {
+    // if sleeping, decrement the sleep time and skip turn
+    if (player->isSleeping()) {
+        player->decreaseSleepTime();
+        cout << "sleepy time" << endl;
+        return;
+    }
+    
     m_justAttacked = false;
     int newX = player->getXPos();
     int newY = player->getYPos();
@@ -396,6 +403,11 @@ void Temple::attack(Actor* attacker, Actor* defender, Weapon weapon) {
     }
     
     if (hit) {
+        if (weapon.getName() == "magic fangs") {
+            cout << "pre sleeptime : " << defender->getSleepTime();
+            defender->magicFangsEffect();
+            cout << "post sleeptime : " << defender->getSleepTime();
+        }
         result = "hits";
     } else {
         result = "misses";
@@ -406,8 +418,10 @@ void Temple::attack(Actor* attacker, Actor* defender, Weapon weapon) {
 // move the monsters based on the position of the player
 void Temple::moveMonsters() {
     for (vector<Monster*>::iterator it = monsters.begin(); it != monsters.end(); ++it) {
-        // move the bogeyman
-        if ((*it)->getName() == "the Bogeyman") {
+        if ((*it)->isSleeping()) {
+            ((*it))->decreaseSleepTime();
+            cout << "sleepy time" << endl;
+        } else if ((*it)->getName() == "the Bogeyman") {
             if ((*it)->smell(player)) {
                 moveTowardsPlayer(*it, 'B');
             }

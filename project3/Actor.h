@@ -45,6 +45,8 @@ public:
     
     // deal with sleeping functionality
     bool isSleeping();
+    void magicFangsEffect(); 
+    void decreaseSleepTime(); 
     
 private:
     string m_name;

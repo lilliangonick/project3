@@ -36,7 +36,7 @@ bool Monster::smell(Player* player) {
 
 Bogeyman::Bogeyman(int smellRange) : Monster("the Bogeyman", 0, 0, randInt(5, 10), "short sword", "slashes", 0, 2, randInt(2, 3), randInt(2, 3), 2, smellRange) {}
 
-Snakewoman::Snakewoman(int smellRange) : Monster("the Snakewoman", 0, 0, randInt(3, 6), "magic fangs of sleep", "strikes", 3, 2, 3, 2, 3, smellRange) {}
+Snakewoman::Snakewoman(int smellRange) : Monster("the Snakewoman", 0, 0, randInt(3, 6), "magic fangs", "strikes", 3, 2, 3, 2, 3, smellRange) {}
 
 Dragon::Dragon(int smellRange) : Monster("the Dragon", 0, 0, randInt(20, 25), "long sword", "swings", 2, 4, 4, 4, 4, smellRange) {}
 
