@@ -38,7 +38,11 @@ void Player::playerMaxHP(int n) {
 // player can pick up objects into its inventory
 void Player::pickUpObject(GameObject* object) {
     if (inventory.size() > 25) {
+        cout << "Your knapsack is full; you can't pick that up." << endl;
         return;
+    }
+    if (object->getName() == "stairs") {
+        return; 
     }
     inventory.push_back(object);
     if (object->getType() == "Scroll") {
@@ -86,7 +90,8 @@ void Player::applyScroll(GameObject* scroll) {
 void Player::cheat() {
     CHANGESTRENGTH(9);
     m_maxHP = 50;
-    cout << "max HP: " << m_maxHP << endl;
+    CHANGEHITPOINT(50);
+    
 }
 
 void Player::weildWeapon() {
@@ -154,7 +159,7 @@ void Player::readScroll() {
                 applyScroll(scroll);
                 string result;
                 if (scroll->getName() == "scroll of teleportation") {
-                    result = "\n";
+                    result = "\nYou feel your body wrenched in space and time.";
                 } else if (scroll->getName() == "scroll of improve armor") {
                     result = "\nYour armor glows blue.";
                 } else if (scroll->getName() == "scroll of strength") {
@@ -187,3 +192,13 @@ void Player::regainHP() {
         Player::setHP(1);
     }
 }
+
+bool Actor::shouldDrop() {
+    return false;
+}
+
+GameObject* Actor::dropNewItem() {
+    return nullptr;
+}
+
+

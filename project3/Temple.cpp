@@ -18,7 +18,7 @@
 using namespace std;
 
 // create temple (constructor)
-Temple::Temple(Player* pointer) : player(pointer), m_level(0), m_justAttacked(false) {
+Temple::Temple(Player* pointer, int level) : player(pointer), m_level(level), m_justAttacked(false), stairs(new GameObject("stairs", "step")), idol(new GameObject("golden idol", "yay")) {
     for (int i = 0; i < 18; i++) {
         for (int j = 0; j < 70; j++) {
             if (i == 0 || j == 0|| j == 69 || i == 17) {
@@ -40,6 +40,7 @@ Temple::~Temple() {
         delete *it;
     }
     objects.clear();
+    delete stairs;
 }
 
 // display map
@@ -71,6 +72,41 @@ void Temple::setPlayer(int x, int y) {
     m_map[y][x] = '@';
 }
 
+// set stairs
+void Temple::setStairsSpawn(int x, int y) {
+    m_map[y][x] = '>';
+}
+
+// set idol
+void Temple::setIdolSpawn(int x, int y) {
+    m_map[y][x] = '&';
+}
+
+void Temple::setStairs() {
+    int x = randInt(1, 69);
+    int y = randInt(1, 17);
+    while (!validMove(x, y)) {
+        x = randInt(1, 69);
+        y = randInt(1, 17);
+    }
+    stairs->setXPos(x);
+    stairs->setYPos(y);
+    setStairsSpawn(stairs->getXPos(), stairs->getYPos());
+}
+
+// set golden idol on level 4
+void Temple::setIdol() {
+    int x = randInt(1, 69);
+    int y = randInt(1, 17);
+    while (!validMove(x, y)) {
+        x = randInt(1, 69);
+        y = randInt(1, 17);
+    }
+    idol->setXPos(x);
+    idol->setYPos(y);
+    setIdolSpawn(idol->getXPos(), idol->getYPos());
+}
+
 bool Temple::justAttacked() {
     return m_justAttacked;
 }
@@ -96,7 +132,6 @@ void Temple::movePlayer(char c) {
     // if sleeping, decrement the sleep time and skip turn
     if (player->isSleeping()) {
         player->decreaseSleepTime();
-        cout << "sleepy time" << endl;
         return;
     }
     
@@ -119,15 +154,18 @@ void Temple::movePlayer(char c) {
     if (isMonsterAt(newX, newY)) {
         Monster* monster = getMonsterAt(newX, newY);
         attack(player, monster, player->getWeapon());
-        // If the monster is dead, remove it from the map and the monsters list
-//        if (monster->getHP() <= 0) {
-//            m_map[monster->getYPos()][monster->getXPos()] = ' ';
-//        }
         m_justAttacked = true;
         return; // do not move the player
     }
     
     m_map[player->getYPos()][player->getXPos()] = ' ';
+    if (player->getXPos() == stairs->getXPos() && player->getYPos() == stairs->getYPos()) {
+        setStairsSpawn(player->getXPos(), player->getYPos());
+    }
+    if (player->getXPos() == idol->getXPos() && player->getYPos() == idol->getYPos()) {
+        setIdolSpawn(player->getXPos(), player->getYPos());
+    }
+    
     if (isObjectAt(player->getXPos(), player->getYPos())) {
         for (vector<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it) {
             if ((*it)->getXPos() == player->getXPos() && (*it)->getYPos() == player->getYPos()) {
@@ -389,10 +427,25 @@ void Temple::attack(Actor* attacker, Actor* defender, Weapon weapon) {
     string weaponName = weapon.getName();
     string defenderName = defender->getName();
     
+    // deletes the monster if it dies
     if (defender->getHP() <= 0) {
         attacks.push_back(attackerName + " " + weaponAction + " " + weaponName + " at " + defenderName + " dealing a final blow.");
         m_map[defender->getYPos()][defender->getXPos()] = ' ';
         if (defender->isMonster()) {
+            // drop an item (based on a probability) upon death
+            if (!isObjectAt(defender->getXPos(), defender->getYPos())) {
+                if (defender->shouldDrop()) {
+                    GameObject* droppedItem = defender->dropNewItem();
+                    droppedItem->setXPos(defender->getXPos());
+                    droppedItem->setYPos(defender->getYPos());
+                    objects.push_back(droppedItem);
+                    if (droppedItem->getName() == "scroll of teleportation" || droppedItem->getName() == "scroll of armor" || droppedItem->getName() == "scroll of strength" || droppedItem->getName() == "scroll of enhance health" || droppedItem->getName() == "scroll of enhance dexterity") {
+                        m_map[droppedItem->getYPos()][droppedItem->getXPos()] = '?';
+                    } else {
+                        m_map[droppedItem->getYPos()][droppedItem->getXPos()] = '(';
+                    }
+                }
+            }
             vector<Monster*>::iterator it = find(monsters.begin(), monsters.end(), defender);
             if (it != monsters.end()) {
                 delete *it;
@@ -404,9 +457,7 @@ void Temple::attack(Actor* attacker, Actor* defender, Weapon weapon) {
     
     if (hit) {
         if (weapon.getName() == "magic fangs") {
-            cout << "pre sleeptime : " << defender->getSleepTime();
             defender->magicFangsEffect();
-            cout << "post sleeptime : " << defender->getSleepTime();
         }
         result = "hits";
     } else {
@@ -420,7 +471,6 @@ void Temple::moveMonsters() {
     for (vector<Monster*>::iterator it = monsters.begin(); it != monsters.end(); ++it) {
         if ((*it)->isSleeping()) {
             ((*it))->decreaseSleepTime();
-            cout << "sleepy time" << endl;
         } else if ((*it)->getName() == "the Bogeyman") {
             if ((*it)->smell(player)) {
                 moveTowardsPlayer(*it, 'B');
@@ -459,6 +509,10 @@ void Temple::moveMonsters() {
                 moveTowardsPlayer(*it, 'G');
             }
         }
+        // if player is already dead when the monsters are attacking, return
+        if (player->getHP() <=0) {
+            return;
+        }
     }
 }
 
@@ -489,11 +543,11 @@ void Temple::moveTowardsPlayer(Monster* monster, char monsterChar) {
         return;
     }
     
-
+    
     // variables to store new position
     int newMonsterXPos = monsterXPos;
     int newMonsterYPos = monsterYPos;
-
+    
     if (playerXPos > monsterXPos && validMonsterMove(monsterXPos + 1, monsterYPos)) {
         newMonsterXPos = monsterXPos + 1;
     } else if (playerXPos < monsterXPos && validMonsterMove(monsterXPos - 1, monsterYPos)) {
@@ -503,8 +557,18 @@ void Temple::moveTowardsPlayer(Monster* monster, char monsterChar) {
     } else if (playerYPos < monsterYPos && validMonsterMove(monsterXPos, monsterYPos - 1)) {
         newMonsterYPos = monsterYPos - 1;
     }
- 
+    
     m_map[monsterYPos][monsterXPos] = ' '; // clear the old position
+    
+    // do not overwrite the stairs
+    if (monster->getXPos() == stairs->getXPos() && monster->getYPos() == stairs->getYPos()) {
+        setStairsSpawn(monster->getXPos(), monster->getYPos());
+    }
+    
+    // do not overwrite the golden idol
+    if (monster->getXPos() == idol->getXPos() && monster->getYPos() == idol->getYPos()) {
+        setIdolSpawn(monster->getXPos(), monster->getYPos());
+    }
     
     // make sure player movement does not overwrite the objects
     if (isObjectAt(monster->getXPos(), monster->getYPos())) {
@@ -521,7 +585,22 @@ void Temple::moveTowardsPlayer(Monster* monster, char monsterChar) {
     m_map[newMonsterYPos][newMonsterXPos] = monsterChar; // set the new position
     monster->setXPos(newMonsterXPos);
     monster->setYPos(newMonsterYPos);
-    
-    
 }
 
+// is the player at the stairs
+bool Temple::atStairs() {
+    if (player->getXPos() == stairs->getXPos() && player->getYPos() == stairs->getYPos()) {
+        return true;
+    } else {
+        return false; 
+    }
+}
+
+// is the player at the idol
+bool Temple::atIdol() {
+    if (player->getXPos() == idol->getXPos() && player->getYPos() == idol->getYPos()) {
+        return true;
+    } else {
+        return false; 
+    }
+}

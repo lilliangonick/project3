@@ -7,29 +7,66 @@ using namespace std;
 
 // Implement these and other Game member functions you may have added.
 
-Game::Game(int goblinSmellDistance) : m_goblinSmellDistance(goblinSmellDistance), player(Player()), board(Temple(&player))
-{}
+Game::Game(int goblinSmellDistance) : m_goblinSmellDistance(goblinSmellDistance), player(Player()), board( new Temple(&player, 0)), m_level(0){}
+
+// delete dynamically allocated board
+Game::~Game() {
+    delete board;
+}
 
 int Game::getGoblinSmellDistance() {
     return m_goblinSmellDistance;
 }
 
-void Game::play()
-{
-    cout << "The game hasn't been implemented yet." << endl;
-    cout << "Press q to exit game." << endl;
+// generate a new level (temple) on command
+void Game::newLevel() {
+    // incrememnt the level
+    m_level++;
+    
+    // clear old level
+    clearScreen();
+    delete board;
+    
+    // create a new board
+    board = new Temple(&player, m_level);
     
     // spawn the player
-    board.setPlayerSpawn();
-    board.setPlayer(player.getXPos(), player.getYPos());
+    board->setPlayerSpawn();
+    board->setPlayer(player.getXPos(), player.getYPos());
     
     // spawn the monsters
-    board.setMonster();
-    board.setMonsterSpawn();
+    board->setMonster();
+    board->setMonsterSpawn();
     
     // spawn the game objects
-    board.setGameObject();
-    board.setGameObjectSpawn();
+    board->setGameObject();
+    board->setGameObjectSpawn();
+    
+    if (m_level < 4) {
+        // spawn the stairs
+        board->setStairs();
+    } else {
+        board->setIdol(); 
+    }
+}
+
+// play a level of Doom
+void Game::play()
+{
+    // spawn the player
+    board->setPlayerSpawn();
+    board->setPlayer(player.getXPos(), player.getYPos());
+    
+    // spawn the monsters
+    board->setMonster();
+    board->setMonsterSpawn();
+    
+    // spawn the game objects
+    board->setGameObject();
+    board->setGameObjectSpawn();
+    
+    // spawn the stairs
+    board->setStairs();
     
     char c = '\0';
     while (c != 'q') {
@@ -38,72 +75,76 @@ void Game::play()
         switch (c) {
             // check if the desired position is valid, then reprint the display, stats (and action line)
             case ARROW_LEFT:
-                if (!board.validMove(player.getXPos() - 1, player.getYPos())) {
+                if (!board->validMove(player.getXPos() - 1, player.getYPos())) {
                     continue;
                 }
                 else {
-                    board.movePlayer(c);
+                    board->movePlayer(c);
                 }
-                board.printMap();
-                board.printStats();
-                if (board.justAttacked()) {
-                    board.printActions();
+                board->printMap();
+                board->printStats();
+                if (board->justAttacked()) {
+                    board->printActions();
                 }
                 break;
             case ARROW_RIGHT:
-                if (!board.validMove(player.getXPos() + 1, player.getYPos())) {
+                if (!board->validMove(player.getXPos() + 1, player.getYPos())) {
                     continue;
                 }
                 else {
-                    board.movePlayer(c);
+                    board->movePlayer(c);
                 }
-                board.printMap();
-                board.printStats();
-                if (board.justAttacked()) {
-                    board.printActions();
+                board->printMap();
+                board->printStats();
+                if (board->justAttacked()) {
+                    board->printActions();
                 }
                 break;
             case ARROW_UP:
-                if (!board.validMove(player.getXPos(), player.getYPos() - 1)) {
+                if (!board->validMove(player.getXPos(), player.getYPos() - 1)) {
                     continue;
                 }
                 else {
-                    board.movePlayer(c);
+                    board->movePlayer(c);
                 }
-                board.printMap();
-                board.printStats();
-                if (board.justAttacked()) {
-                    board.printActions();
+                board->printMap();
+                board->printStats();
+                if (board->justAttacked()) {
+                    board->printActions();
                 }
                 break;
             case ARROW_DOWN:
-                if (!board.validMove(player.getXPos(), player.getYPos() + 1)) {
+                if (!board->validMove(player.getXPos(), player.getYPos() + 1)) {
                     continue;
                 }
                 else {
-                    board.movePlayer(c);
+                    board->movePlayer(c);
                 }
-                board.printMap();
-                board.printStats();
-                if (board.justAttacked()) {
-                    board.printActions();
+                board->printMap();
+                board->printStats();
+                if (board->justAttacked()) {
+                    board->printActions();
                 }
                 break;
             case 'g':
-                if (board.checkForObjects()) {
+                if (board->atIdol()) {
+                    cout << "You pick up the golden idol\n" << "Congratulations, you won!";
+                    break;
+                }
+                if (board->checkForObjects()) {
                     continue;
                 }
-                board.printMap();
-                board.printStats();
-                if (board.justAttacked()) {
-                    board.printActions();
+                board->printMap();
+                board->printStats();
+                if (board->justAttacked()) {
+                    board->printActions();
                 }
                 break;
             // cheating increasings the players stats
             case 'c':
                 player.cheat();
-                board.printMap();
-                board.printStats();
+                board->printMap();
+                board->printStats();
                 break;
             // print the inventory
             case 'i':
@@ -114,33 +155,43 @@ void Game::play()
             case 'w':
                 clearScreen();
                 player.weildWeapon();
-                board.printMap();
-                board.printStats();
+                board->printMap();
+                board->printStats();
                 player.printInventoryResult();
                 break;
             // print inventory, then read  a scroll
             case 'r':
                 clearScreen();
                 player.readScroll();
-                board.printMap();
-                board.printStats();
+                board->printMap();
+                board->printStats();
                 player.printInventoryResult();
                 break;
+            // generate a new level
+            case '>':
+                if (board->atStairs()) {
+                    newLevel();
+                    board->printMap();
+                    board->printStats();
+                    break;
+                }
             // if invalid input, do not do anything
             default:
-                board.printMap();
-                board.printStats(); 
-                break;
+                board->printMap();
+                board->printStats();
         }
-        board.moveMonsters(); 
-        if (board.justAttacked()) {
-            board.printActions();
+        if (!board->atIdol()) {
+            board->moveMonsters();
+            if (board->justAttacked()) {
+                board->printActions();
+            }
         }
         
         if (player.getHP() <= 0) {
             break;
         }
     }
+    cout << "Press q to exit game." << endl;
 }
 
 // You will presumably add to this project other .h/.cpp files for the various

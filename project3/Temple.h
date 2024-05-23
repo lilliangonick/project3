@@ -21,7 +21,7 @@ class Weapon;
 
 class Temple {
 public:
-    Temple(Player* pointer);
+    Temple(Player* pointer, int level);
     ~Temple();
              
     //  printing actions to the dispplay
@@ -33,6 +33,8 @@ public:
     void setPlayerSpawn();
     void setMonsterSpawn();
     void setGameObjectSpawn();
+    void setStairsSpawn(int x, int y);
+    void setIdolSpawn(int x, int y);
     
     // validate moves
     bool validMove(int xPos, int yPos);
@@ -49,6 +51,12 @@ public:
     
     // place game objects
     void setGameObject();
+    
+    // place stairs
+    void setStairs(); 
+    
+    // place golden idol
+    void setIdol();
     
 //    void applyScroll(GameObject* scroll);
     bool checkForObjects();
@@ -72,6 +80,12 @@ public:
     void moveTowardsPlayer(Monster* monster, char monsterChar);
     void dropItem(Monster* monster, int x, int y);
     
+    // descent stairs
+    bool atStairs();
+    
+    // pick up idol
+    bool atIdol();
+    
 
     
 private:
@@ -82,6 +96,8 @@ private:
     vector<GameObject*> objects; 
     vector<string> attacks;
     bool m_justAttacked; 
+    GameObject* stairs; 
+    GameObject* idol;
 };
 
 #endif /* Temple_h */

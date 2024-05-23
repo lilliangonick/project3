@@ -111,6 +111,10 @@ void Actor::CHANGESTRENGTH(int n) {
     m_strength = n;
 }
 
+void Actor::CHANGEHITPOINT(int n) {
+    m_hit = n;
+}
+
 bool Actor::isMonster() {
     return m_isMonster;
 }

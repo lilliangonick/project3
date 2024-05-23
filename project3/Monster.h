@@ -12,6 +12,7 @@
 #include <string>
 
 #include "Player.h"
+#include "GameObject.h"
 
 class Monster : public Actor {
 public:
@@ -20,34 +21,44 @@ public:
     
     virtual bool smell(Player* player);
     int getSmellRange();
+    
+    // dropping items on death
+    virtual bool shouldDrop(); 
+    virtual GameObject* dropNewItem();
 
     
 private:
-    bool m_isDead; 
-    
-private:
     int m_smellRange;
+    bool m_isDead;
 };
 
 class Bogeyman : public Monster {
 public:
     Bogeyman(int smellRange);
+    virtual bool shouldDrop();
+    virtual GameObject* dropNewItem();
 };
 
 class Snakewoman : public Monster {
 public:
     Snakewoman(int smellRange);
+    virtual bool shouldDrop();
+    virtual GameObject* dropNewItem();
 };
 
 class Dragon : public Monster {
 public:
     Dragon(int smellRange);
+    virtual bool shouldDrop();
+    virtual GameObject* dropNewItem();
     void heal();
 };
 
 class Goblin : public Monster {
 public:
     Goblin(int smellRange);
+    virtual bool shouldDrop(); 
+    virtual GameObject* dropNewItem();
     virtual bool smell(Player* player, int smellRange);
 };
 

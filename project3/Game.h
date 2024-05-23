@@ -15,12 +15,15 @@ class Game
 {
 public:
     Game(int goblinSmellDistance);
-    int getGoblinSmellDistance(); 
+    ~Game(); 
+    int getGoblinSmellDistance();
     void play();
+    void newLevel(); 
 private:
     int m_goblinSmellDistance;
+    int m_level;
     Player player;
-    Temple board;
+    Temple* board;
 };
 
 #endif // GAME_INCLUDED

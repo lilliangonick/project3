@@ -40,6 +40,7 @@ public:
     void setSleepTime(int n);
     void setWeapon(Weapon weapon);
     void CHANGESTRENGTH(int n);
+    void CHANGEHITPOINT(int n);
     
     bool isMonster(); 
     
@@ -47,6 +48,8 @@ public:
     bool isSleeping();
     void magicFangsEffect(); 
     void decreaseSleepTime(); 
+    virtual bool shouldDrop();
+    virtual GameObject* dropNewItem();
     
 private:
     string m_name;
