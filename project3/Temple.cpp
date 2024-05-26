@@ -21,13 +21,15 @@ using namespace std;
 Temple::Temple(Player* pointer, int level) : player(pointer), m_level(level), m_justAttacked(false), stairs(new GameObject("stairs", "step")), idol(new GameObject("golden idol", "yay")) {
     for (int i = 0; i < 18; i++) {
         for (int j = 0; j < 70; j++) {
-            if (i == 0 || j == 0|| j == 69 || i == 17) {
-                m_map[i][j] = '#';
-            } else {
-                m_map[i][j] = ' ';
-            }
+            m_map[i][j] = '#';
+//            if (i == 0 || j == 0|| j == 69 || i == 17) {
+//                m_map[i][j] = '#';
+//            } else {
+//                m_map[i][j] = ' ';
+//            }
         }
     }
+    generateRooms();
  }
 
 // destructor (deallocate memory)
@@ -36,10 +38,17 @@ Temple::~Temple() {
         delete *it;
     }
     monsters.clear();
+    
     for (vector<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it) {
         delete *it;
     }
     objects.clear();
+    
+    for (vector<Room*>::iterator it = rooms.begin(); it != rooms.end(); ++it) {
+        delete *it;
+    }
+    rooms.clear();
+    
     delete stairs;
 }
 
@@ -50,6 +59,80 @@ void Temple::printMap() {
             std::cout << m_map[i][j];
         }
         cout << endl;
+    }
+}
+
+// do the rooms overlap?
+bool Temple::overlaps(Room room1, Room room2) {
+    if (room1.getX() + room1.getWidth() + 1 <= room2.getX() - 1|| room2.getX() + room2.getWidth() + 1 <= room1.getX() - 1|| room1.getY() + room1.getHeight() + 1 <= room2.getY() - 1|| room2.getY() + room2.getHeight() + 1 <= room1.getY() - 1) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+// create random rooms
+void Temple::generateRooms() {
+    int numRooms = randInt(4, 6);
+    for (int i = 0; i < numRooms; i++) {
+        bool roomAdded = false;
+        while(!roomAdded) {
+            int xPos = randInt(1, 69);
+            int yPos = randInt(1, 17);
+            
+            int width = randInt(8, 15);
+            int height = randInt(3, 8);
+            
+            // ensure the room fits within the map
+            while (xPos + width > 69) {
+                xPos = randInt(1, 69);
+            }
+            
+            while (yPos + height > 17) {
+                yPos = randInt(1, 17);
+            }
+            
+            cout << "Room " << i << " xPos = " << xPos << endl;
+            cout << "Room " << i << "yPos = " << yPos << endl;
+            
+            cout << "Room " << i << " width = " << width << endl;
+            cout << "Room " << i << "height = " << height << endl;
+            
+            Room* newRoom = new Room(xPos, yPos, width, height);
+            
+            // rooms can not overlap
+            bool overlap = false;
+            for (std::vector<Room*>::iterator it = rooms.begin(); it != rooms.end(); ++it) {
+                if (overlaps(*newRoom, **it)) {
+                    overlap = true;
+                    break;
+                }
+            }
+
+            // if the room is valid, add it to the room vector
+            if (!overlap) {
+                rooms.push_back(newRoom);
+                printRoom(*newRoom);
+                roomAdded = true; // can exit the while loop
+            } else { // if not valid room, delete the point that was made;
+                delete newRoom;
+            }
+            
+            cout << newRoom->getX() << ' ' << newRoom->getY() << ' ' << newRoom->getWidth() << ' ' << newRoom->getHeight() << endl;
+        }
+    }
+}
+
+void Temple::printRoom(Room room) {
+    int startingX = room.getX();
+    int startingY = room.getY();
+    int endingX = room.getX() + room.getWidth();
+    int endingY = room.getY() + room.getHeight();
+    
+    for (int y = startingY; y < endingY; y++) {
+        for (int x = startingX; x < endingX; x++) {
+            m_map[y][x] = ' ';
+        }
     }
 }
 

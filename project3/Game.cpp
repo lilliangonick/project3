@@ -68,6 +68,10 @@ void Game::play()
     // spawn the stairs
     board->setStairs();
     
+    // display the map
+    board->printMap();
+    board->printStats();
+    
     char c = '\0';
     while (c != 'q') {
         player.regainHP();

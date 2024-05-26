@@ -102,9 +102,7 @@ void Player::weildWeapon() {
         firstChar++;
     }
 
-    cout << "Enter your choice: ";
     char c = getCharacter();
-    cout << "Character entered: " << c << endl;
 
 
     int index = c - 'a';

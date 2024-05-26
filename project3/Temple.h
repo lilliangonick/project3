@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <string>
+#include "Room.h"
 
 using namespace std; 
 
@@ -28,6 +29,11 @@ public:
     void printMap();
     void printStats();
     void printActions();
+    
+    // set random rooms
+    void generateRooms();
+    bool overlaps(Room room1, Room room2);
+    void printRoom(Room room);
     
     // set the positions for the spawn of player, monsters, and objects
     void setPlayerSpawn();
@@ -90,10 +96,11 @@ public:
     
 private:
     char m_map[18][70];
+    vector<Room*> rooms;
     Player* player;
     int m_level;
     vector<Monster*> monsters;
-    vector<GameObject*> objects; 
+    vector<GameObject*> objects;
     vector<string> attacks;
     bool m_justAttacked; 
     GameObject* stairs; 
