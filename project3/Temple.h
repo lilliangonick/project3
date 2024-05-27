@@ -34,6 +34,10 @@ public:
     void generateRooms();
     bool overlaps(Room room1, Room room2);
     void printRoom(Room room);
+    double calculateDistance(Room room1, Room room2); 
+    void connectRooms();
+    bool allRoomsConnected(); 
+    void dfs(char copy[18][70], int i, int j);
     
     // set the positions for the spawn of player, monsters, and objects
     void setPlayerSpawn();

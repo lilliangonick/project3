@@ -14,22 +14,28 @@
 #include <iostream>
 #include <typeinfo>
 #include <algorithm>
+#include <queue>
 
 using namespace std;
 
 // create temple (constructor)
 Temple::Temple(Player* pointer, int level) : player(pointer), m_level(level), m_justAttacked(false), stairs(new GameObject("stairs", "step")), idol(new GameObject("golden idol", "yay")) {
-    for (int i = 0; i < 18; i++) {
-        for (int j = 0; j < 70; j++) {
-            m_map[i][j] = '#';
-//            if (i == 0 || j == 0|| j == 69 || i == 17) {
-//                m_map[i][j] = '#';
-//            } else {
-//                m_map[i][j] = ' ';
-//            }
+    int counter = 0;
+    do {
+        for (int i = 0; i < 18; i++) {
+            for (int j = 0; j < 70; j++) {
+                m_map[i][j] = '#';
+            }
         }
-    }
-    generateRooms();
+        generateRooms();
+        connectRooms();
+        for (vector<Room*>::iterator it = rooms.begin(); it != rooms.end(); ++it) {
+            delete *it;
+        }
+        rooms.clear();
+        counter++;
+    } while (!allRoomsConnected());
+
  }
 
 // destructor (deallocate memory)
@@ -71,6 +77,18 @@ bool Temple::overlaps(Room room1, Room room2) {
     }
 }
 
+// calculate the distance between rooms
+double Temple::calculateDistance(Room room1, Room room2) {
+    // get the center points of each room
+    int x1 = room1.getX() + room1.getWidth() / 2;
+    int y1 = room1.getY() + room1.getHeight() / 2;
+    int x2 = room2.getX() + room2.getWidth() / 2;
+    int y2 = room2.getY() + room2.getHeight() / 2;
+    
+    // return the distance between the two centers 
+    return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+}
+
 // create random rooms
 void Temple::generateRooms() {
     int numRooms = randInt(4, 6);
@@ -92,17 +110,11 @@ void Temple::generateRooms() {
                 yPos = randInt(1, 17);
             }
             
-            cout << "Room " << i << " xPos = " << xPos << endl;
-            cout << "Room " << i << "yPos = " << yPos << endl;
-            
-            cout << "Room " << i << " width = " << width << endl;
-            cout << "Room " << i << "height = " << height << endl;
-            
-            Room* newRoom = new Room(xPos, yPos, width, height);
+            Room* newRoom = new Room(xPos, yPos, width, height, false);
             
             // rooms can not overlap
             bool overlap = false;
-            for (std::vector<Room*>::iterator it = rooms.begin(); it != rooms.end(); ++it) {
+            for (vector<Room*>::iterator it = rooms.begin(); it != rooms.end(); ++it) {
                 if (overlaps(*newRoom, **it)) {
                     overlap = true;
                     break;
@@ -118,10 +130,83 @@ void Temple::generateRooms() {
                 delete newRoom;
             }
             
-            cout << newRoom->getX() << ' ' << newRoom->getY() << ' ' << newRoom->getWidth() << ' ' << newRoom->getHeight() << endl;
         }
     }
 }
+
+void Temple::connectRooms() {
+    for (vector<Room*>::iterator it = rooms.begin(); it != rooms.end(); ++it) {
+        int minDistance = 1000;
+        Room* closestRoom = nullptr;
+        // determine the closest room to the current room
+        for (vector<Room*>::iterator other = rooms.begin(); other != rooms.end(); ++other) {
+            if (it != other) {
+                if ((*other)->isConnected() == false) {
+                    if (calculateDistance(**it, **other) < minDistance) {
+                        minDistance = calculateDistance(**it, **other);
+                        closestRoom = *other;
+                    }
+                }
+            }
+        }
+        if (closestRoom != nullptr) {
+            closestRoom->setConnected(true);
+            (*it)->setConnected(true);
+            
+            // connect the two rooms
+            int startingX = (*it)->getX() + (*it)->getWidth() / 2;
+            int startingY = (*it)->getY() + (*it)->getHeight() / 2;
+            int endingX = closestRoom->getX() + closestRoom->getWidth() / 2;
+            int endingY = closestRoom->getY() + closestRoom->getHeight() / 2;
+            
+            // horizontal pathway
+            for (int x = min(startingX, endingX); x <= max(startingX, endingX); ++x) {
+                m_map[startingY][x] = ' ';
+            }
+            
+            // vertical pathway
+            for (int y = min(startingY, endingY); y <= max(startingY, endingY); ++y) {
+                m_map[y][endingX] = ' ';
+            }
+        }
+    }
+}
+
+bool Temple::allRoomsConnected() {
+    char copy[18][70];
+    for (int i = 0; i < 18; i++) {
+        for (int j = 0; j < 70; j++) {
+            copy[i][j] = m_map[i][j];
+        }
+    }
+    
+    int numberOfIslands = 0;
+    
+    for (int i = 0; i < 18; i++) {
+        for (int j = 0; j < 70; j++) {
+            if (copy[i][j] == ' ') {
+                dfs(copy, i, j);
+                numberOfIslands++;
+            }
+        }
+    }
+    return numberOfIslands == 1;
+}
+
+void Temple::dfs(char copy[18][70], int i, int j) {
+    if (i < 0 || i >= 18 || j < 0 || j >= 70 || copy[i][j] == '#') {
+        return;
+    }
+    
+    copy[i][j] = '#';
+    
+    dfs(copy, i + 1, j);
+    dfs(copy, i, j - 1);
+    dfs(copy, i - 1, j);
+    dfs(copy, i, j + 1);
+    
+}
+
 
 void Temple::printRoom(Room room) {
     int startingX = room.getX();
@@ -687,3 +772,4 @@ bool Temple::atIdol() {
         return false; 
     }
 }
+

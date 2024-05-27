@@ -7,7 +7,7 @@
 
 #include "Room.h"
 
-Room::Room(int xPos, int yPos, int width, int height) : m_x(xPos), m_y(yPos), m_width(width), m_height(height) {}
+Room::Room(int xPos, int yPos, int width, int height, bool connected) : m_x(xPos), m_y(yPos), m_width(width), m_height(height), m_connected(connected) {}
 
 // getters
 int Room::getX() {
@@ -26,3 +26,10 @@ int Room::getHeight() {
     return m_height; 
 }
 
+bool Room::isConnected() {
+    return m_connected; 
+}
+
+void Room::setConnected(bool connected) {
+    m_connected = connected;
+}
