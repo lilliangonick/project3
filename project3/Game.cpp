@@ -30,10 +30,6 @@ void Game::newLevel() {
     // create a new board
     board = new Temple(&player, m_level, m_goblinSmellDistance);
     
-    // spawn the player
-    board->setPlayerSpawn();
-    board->setPlayer(player.getXPos(), player.getYPos());
-    
     // spawn the monsters
     board->setMonster();
     board->setMonsterSpawn();
@@ -48,15 +44,15 @@ void Game::newLevel() {
     } else {
         board->setIdol(); 
     }
+    
+    // spawn the player
+    board->setPlayerSpawn();
+    board->setPlayer(player.getXPos(), player.getYPos());
 }
 
 // play a level of Doom
 void Game::play()
 {
-    // spawn the player
-    board->setPlayerSpawn();
-    board->setPlayer(player.getXPos(), player.getYPos());
-    
     // spawn the monsters
     board->setMonster();
     board->setMonsterSpawn();
@@ -68,6 +64,10 @@ void Game::play()
     // spawn the stairs
     board->setStairs();
     
+    // spawn the player
+    board->setPlayerSpawn();
+    board->setPlayer(player.getXPos(), player.getYPos());
+    
     // display the map
     board->printMap();
     board->printStats();
@@ -76,6 +76,23 @@ void Game::play()
     while (c != 'q') {
         player.regainHP();
         c = getCharacter();
+        
+        // deal with movement when the player is asleep (the monsters can still attack) 
+        if (player.isSleeping()) {
+            board->movePlayer(c);
+            if (!board->atIdol()) {
+                board->moveMonsters();
+                board->printMap();
+                board->printStats();
+                if (board->justAttacked()) {
+                    board->printActions();
+                }
+            }
+            if (player.getHP() <= 0) {
+                break;
+            }
+            continue;
+        }
         switch (c) {
             // check if the desired position is valid, then reprint the display, stats (and action line)
             case ARROW_LEFT:

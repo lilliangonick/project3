@@ -22,29 +22,16 @@ public:
     // players can increase their max HP
     virtual void setHP(int n);
     void playerMaxHP(int n);
+    int getMaxHP();
     
-//    // player actions
-//    void pickUpObject(GameObject* object);
-//    void applyScroll(GameObject* scroll);
-//    
-//    void weildWeapon();
-//    void readScroll();
     
     void regainHP();
-    
-//    // inventory stuff
-//    void printInventory();
-//    void printInventoryResult();
-//    vector<string> getInventoryResults();
     
     // player can cheat
     void cheat();
     
 private:
     int m_maxHP; 
-//    vector<GameObject*> inventory;
-//    vector<string> inventoryResult;
-    
 };
 
 #endif /* Player_h */

@@ -59,7 +59,7 @@ GameObject* Bogeyman::dropNewItem() {
 Snakewoman::Snakewoman(int smellRange) : Monster("the Snakewoman", 0, 0, randInt(3, 6), "magic fangs", "strikes", 3, 2, 3, 2, 3, smellRange) {}
 
 bool Snakewoman::shouldDrop() {
-    if (trueWithProbability((1.0)/(3.0))) {
+    if (trueWithProbability(1/3)) {
         return true;
     } else {
         return false;
@@ -94,7 +94,7 @@ GameObject* Dragon::dropNewItem() {
 Goblin::Goblin(int smellRange) : Monster("the Goblin", 0, 0, randInt(15, 20), "short sword", "slashes", 0, 2, 1, 3, 1, smellRange) {}
 
 bool Goblin::shouldDrop() {
-    if (trueWithProbability((1.0)/(3.0))) {
+    if (trueWithProbability(1/3)) {
         return true;
     } else {
         return false; 
@@ -121,8 +121,9 @@ bool Goblin::smell(Player* player, int smellRange) {
         return true;
     }
     
-    int distanceFromPlayer = abs(playerXPos - goblinXPos) + abs(playerYPos -goblinYPos);
+    int distanceFromPlayer = abs(playerXPos - goblinXPos) + abs(playerYPos - goblinYPos);
     
+    // if goblin is right next to (second base case)
     if (distanceFromPlayer <= getSmellRange()) {
         if (goblinXPos + 1 == playerXPos && goblinYPos == playerYPos) {
             return true;
@@ -135,7 +136,6 @@ bool Goblin::smell(Player* player, int smellRange) {
         }
         
         // recursive step
-        // Recursively check adjacent cells
         if (goblinXPos + 1 != playerXPos && smell(player, smellRange - 1)) {
             return true;
         }

@@ -99,7 +99,6 @@ public:
     // player object actions
     void pickUpObject(GameObject* object);
     void applyScroll(GameObject* scroll);
-    
     void weildWeapon();
     void readScroll();
     
@@ -115,13 +114,17 @@ private:
     vector<Room*> rooms;
     Player* player;
     int m_level;
+    GameObject* stairs;
+    GameObject* idol;
+    int m_goblinSmellDistance; 
+    
+    // monsters/objects on screen
     vector<Monster*> monsters;
     vector<GameObject*> objects;
     vector<string> attacks;
-    bool m_justAttacked; 
-    GameObject* stairs; 
-    GameObject* idol;
-    int m_goblinSmellDistance; 
+    bool m_justAttacked;
+    
+    // player inventory stuff
     vector<GameObject*> inventory;
     vector<string> inventoryResult;
 };

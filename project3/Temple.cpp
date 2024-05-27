@@ -14,7 +14,6 @@
 #include <iostream>
 #include <typeinfo>
 #include <algorithm>
-#include <queue>
 
 using namespace std;
 
@@ -42,21 +41,25 @@ Temple::Temple(Player* pointer, int level, int goblinSmellDistance) : player(poi
 
 // destructor (deallocate memory)
 Temple::~Temple() {
+    // delete monsters vector
     for (vector<Monster*>::iterator it = monsters.begin(); it != monsters.end(); ++it) {
         delete *it;
     }
     monsters.clear();
     
+    // delete objects vector
     for (vector<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it) {
         delete *it;
     }
     objects.clear();
     
+    // delete rooms vector
     for (vector<Room*>::iterator it = rooms.begin(); it != rooms.end(); ++it) {
         delete *it;
     }
     rooms.clear();
     
+    // delete inventory vector
     for (vector<GameObject*>::iterator it = inventory.begin(); it != inventory.end(); it++) {
         delete *it;
     }
@@ -92,7 +95,7 @@ double Temple::calculateDistance(Room room1, Room room2) {
     int x2 = room2.getX() + room2.getWidth() / 2;
     int y2 = room2.getY() + room2.getHeight() / 2;
     
-    // return the distance between the two centers 
+    // return the distance between the two centers (distance formula)
     return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }
 
@@ -141,6 +144,7 @@ void Temple::generateRooms() {
     }
 }
 
+// create the corridors between rooms
 void Temple::connectRooms() {
     for (vector<Room*>::iterator it = rooms.begin(); it != rooms.end(); ++it) {
         int minDistance = 1000;
@@ -179,6 +183,7 @@ void Temple::connectRooms() {
     }
 }
 
+// if there is not a path to every room, regenerate
 bool Temple::allRoomsConnected() {
     char copy[18][70];
     for (int i = 0; i < 18; i++) {
@@ -200,6 +205,7 @@ bool Temple::allRoomsConnected() {
     return numberOfIslands == 1;
 }
 
+// depth first search to check that every room has been visited
 void Temple::dfs(char copy[18][70], int i, int j) {
     if (i < 0 || i >= 18 || j < 0 || j >= 70 || copy[i][j] == '#') {
         return;
@@ -214,7 +220,7 @@ void Temple::dfs(char copy[18][70], int i, int j) {
     
 }
 
-
+// display the rooms with ' '
 void Temple::printRoom(Room room) {
     int startingX = room.getX();
     int startingY = room.getY();
@@ -260,7 +266,9 @@ void Temple::setIdolSpawn(int x, int y) {
 void Temple::setStairs() {
     int x = randInt(1, 69);
     int y = randInt(1, 17);
-    while (!validMove(x, y)) {
+    while (
+           !validMove(x, y)
+           ) {
         x = randInt(1, 69);
         y = randInt(1, 17);
     }
@@ -353,7 +361,7 @@ void Temple::movePlayer(char c) {
         }
     }
     
-    // Move the player to the new position
+    // move the player to the new position
     player->Actor::setXPos(newX);
     player->Actor::setYPos(newY);
     setPlayer(player->getXPos(), player->getYPos());
@@ -532,7 +540,7 @@ void Temple::setGameObjectSpawn() {
         (*it)->setXPos(x);
         (*it)->setYPos(y);
 
-        if ((*it)->getName() == "scroll of teleportation" || (*it)->getName() == "scroll of armor" || (*it)->getName() == "scroll of strength" || (*it)->getName() == "scroll of enhance health" || (*it)->getName() == "scroll of enhance dexterity") {
+        if ((*it)->getName() == "scroll of teleportation" || (*it)->getName() == "scroll of enhance armor" || (*it)->getName() == "scroll of strength" || (*it)->getName() == "scroll of enhance health" || (*it)->getName() == "scroll of enhance dexterity") {
             m_map[(*it)->getYPos()][(*it)->getXPos()] = '?';
         } else {
             m_map[(*it)->getYPos()][(*it)->getXPos()] = '(';
@@ -614,7 +622,7 @@ void Temple::attack(Actor* attacker, Actor* defender, Weapon weapon) {
                     droppedItem->setXPos(defender->getXPos());
                     droppedItem->setYPos(defender->getYPos());
                     objects.push_back(droppedItem);
-                    if (droppedItem->getName() == "scroll of teleportation" || droppedItem->getName() == "scroll of armor" || droppedItem->getName() == "scroll of strength" || droppedItem->getName() == "scroll of enhance health" || droppedItem->getName() == "scroll of enhance dexterity") {
+                    if (droppedItem->getName() == "scroll of teleportation" || droppedItem->getName() == "scroll of enhance armor" || droppedItem->getName() == "scroll of strength" || droppedItem->getName() == "scroll of enhance health" || droppedItem->getName() == "scroll of enhance dexterity") {
                         m_map[droppedItem->getYPos()][droppedItem->getXPos()] = '?';
                     } else {
                         m_map[droppedItem->getYPos()][droppedItem->getXPos()] = '(';
@@ -638,6 +646,7 @@ void Temple::attack(Actor* attacker, Actor* defender, Weapon weapon) {
     } else {
         result = "misses";
     }
+
     attacks.push_back(attackerName +  " " + weaponAction + " " + weaponName + " at " + defenderName + " and " + result);
 }
 
@@ -655,9 +664,8 @@ void Temple::moveMonsters() {
                 moveTowardsPlayer(*it, 'S');
             }
         } else if ((*it)->getName() == "the Dragon") {
-            // dragos have a 1/10 chance of healing
+            // dragons have a 1/10 chance of healing
             if (trueWithProbability(0.1)) {
-                cout << "dragaon healed" << endl;
                 ((*it))->setHP(1);
             }
             
@@ -691,7 +699,7 @@ void Temple::moveMonsters() {
     }
 }
 
-// calculate which step to move towars the player
+// calculate which step to move towards the player
 void Temple::moveTowardsPlayer(Monster* monster, char monsterChar) {
     m_justAttacked = false;
     int playerXPos = player->getXPos();
@@ -780,8 +788,7 @@ bool Temple::atIdol() {
     }
 }
 
-
-// TEST TEST TEST
+// player inventory functions:
 
 // player can pick up objects into its inventory
 void Temple::pickUpObject(GameObject* object) {
@@ -814,6 +821,28 @@ void Temple::printInventory() {
 void Temple::applyScroll(GameObject* scroll) {
     // teleportation object
     if (scroll->getName() == "scroll of teleportation") {
+        
+        // if there is an object where the player is, do not overwrite it
+        m_map[player->getYPos()][player->getXPos()] = ' ';
+        if (player->getXPos() == stairs->getXPos() && player->getYPos() == stairs->getYPos()) {
+            setStairsSpawn(player->getXPos(), player->getYPos());
+        }
+        if (player->getXPos() == idol->getXPos() && player->getYPos() == idol->getYPos()) {
+            setIdolSpawn(player->getXPos(), player->getYPos());
+        }
+        
+        if (isObjectAt(player->getXPos(), player->getYPos())) {
+            for (vector<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it) {
+                if ((*it)->getXPos() == player->getXPos() && (*it)->getYPos() == player->getYPos()) {
+                    if ((*it)->getType() == "Scroll") {
+                        m_map[(*it)->getYPos()][(*it)->getXPos()] = '?';
+                    } else {
+                        m_map[(*it)->getYPos()][(*it)->getXPos()] = '(';
+                    }
+                }
+            }
+        }
+        
         int x = randInt(1, 69);
         int y = randInt(1, 17);
         while (!validMove(x, y)) {
@@ -822,17 +851,20 @@ void Temple::applyScroll(GameObject* scroll) {
         }
         player->setXPos(x);
         player->setYPos(y);
-    } else if (scroll->getName() == "scroll of armor") {
+        setPlayer(player->getXPos(),player->getYPos());
+        
+    } else if (scroll->getName() == "scroll of enhance armor") {
         player->setArmor(randInt(1, 3));
     } else if (scroll->getName() == "scroll of strength") {
         player->setStrength(randInt(1, 3));
-    } else if (scroll->getName() == "croll of enhance health") {
+    } else if (scroll->getName() == "scroll of enhance health") {
         player->playerMaxHP(randInt(3, 8));
     } else if (scroll->getName() == "scroll of enhance dexterity") {
         player->setDexterity(1);
     }
 }
 
+// wield a weapon from inventory
 void Temple::weildWeapon() {
     cout << "Inventory: " << endl;
     char firstChar = 'a';
@@ -877,9 +909,7 @@ void Temple::readScroll() {
            firstChar++;
        }
 
-    cout << "Enter your choice: ";
     char c = getCharacter();
-    cout << "Character entered: " << c << endl;
 
     int index = c - 'a';
     if (index >= 0 && index < inventory.size()) {
@@ -897,7 +927,7 @@ void Temple::readScroll() {
                 string result;
                 if (scroll->getName() == "scroll of teleportation") {
                     result = "\nYou feel your body wrenched in space and time.";
-                } else if (scroll->getName() == "scroll of improve armor") {
+                } else if (scroll->getName() == "scroll of enhance armor") {
                     result = "\nYour armor glows blue.";
                 } else if (scroll->getName() == "scroll of strength") {
                     result = "\nYour muscles bulge.";
@@ -913,6 +943,7 @@ void Temple::readScroll() {
     }
 }
 
+// print what player is using from the inventory 
 void Temple::printInventoryResult() {
     if (inventoryResult.size() != 0) {
         cout << inventoryResult[0] << endl;
