@@ -14,8 +14,6 @@
 
 #include "GameObject.h"
 
-class Temple;
-
 class Player : public Actor {
 public:
     Player();
@@ -25,27 +23,27 @@ public:
     virtual void setHP(int n);
     void playerMaxHP(int n);
     
-    // player actions
-    void pickUpObject(GameObject* object);
-    void applyScroll(GameObject* scroll);
-    
-    void weildWeapon();
-    void readScroll();
+//    // player actions
+//    void pickUpObject(GameObject* object);
+//    void applyScroll(GameObject* scroll);
+//    
+//    void weildWeapon();
+//    void readScroll();
     
     void regainHP();
     
-    // inventory stuff
-    void printInventory();
-    void printInventoryResult();
-    vector<string> getInventoryResults();
+//    // inventory stuff
+//    void printInventory();
+//    void printInventoryResult();
+//    vector<string> getInventoryResults();
     
     // player can cheat
     void cheat();
     
 private:
     int m_maxHP; 
-    vector<GameObject*> inventory;
-    vector<string> inventoryResult;
+//    vector<GameObject*> inventory;
+//    vector<string> inventoryResult;
     
 };
 

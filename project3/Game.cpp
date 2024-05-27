@@ -7,7 +7,7 @@ using namespace std;
 
 // Implement these and other Game member functions you may have added.
 
-Game::Game(int goblinSmellDistance) : m_goblinSmellDistance(goblinSmellDistance), player(Player()), board( new Temple(&player, 0)), m_level(0){}
+Game::Game(int goblinSmellDistance) : m_goblinSmellDistance(goblinSmellDistance), player(Player()), board( new Temple(&player, 0, goblinSmellDistance)), m_level(0){}
 
 // delete dynamically allocated board
 Game::~Game() {
@@ -28,7 +28,7 @@ void Game::newLevel() {
     delete board;
     
     // create a new board
-    board = new Temple(&player, m_level);
+    board = new Temple(&player, m_level, m_goblinSmellDistance);
     
     // spawn the player
     board->setPlayerSpawn();
@@ -153,23 +153,23 @@ void Game::play()
             // print the inventory
             case 'i':
                 clearScreen();
-                player.printInventory();
-                break; 
+                board->printInventory();
+                break;
             // print inventory, then weild a weapon
             case 'w':
                 clearScreen();
-                player.weildWeapon();
+                board->weildWeapon();
                 board->printMap();
                 board->printStats();
-                player.printInventoryResult();
+                board->printInventoryResult();
                 break;
             // print inventory, then read  a scroll
             case 'r':
                 clearScreen();
-                player.readScroll();
+                board->readScroll();
                 board->printMap();
                 board->printStats();
-                player.printInventoryResult();
+                board->printInventoryResult();
                 break;
             // generate a new level
             case '>':

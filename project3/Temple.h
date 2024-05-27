@@ -22,7 +22,7 @@ class Weapon;
 
 class Temple {
 public:
-    Temple(Player* pointer, int level);
+    Temple(Player* pointer, int level, int goblinSmellDistance);
     ~Temple();
              
     //  printing actions to the dispplay
@@ -96,6 +96,18 @@ public:
     // pick up idol
     bool atIdol();
     
+    // player object actions
+    void pickUpObject(GameObject* object);
+    void applyScroll(GameObject* scroll);
+    
+    void weildWeapon();
+    void readScroll();
+    
+    // inventory stuff
+    void printInventory();
+    void printInventoryResult();
+    vector<string> getInventoryResults();
+    
 
     
 private:
@@ -109,6 +121,9 @@ private:
     bool m_justAttacked; 
     GameObject* stairs; 
     GameObject* idol;
+    int m_goblinSmellDistance; 
+    vector<GameObject*> inventory;
+    vector<string> inventoryResult;
 };
 
 #endif /* Temple_h */
