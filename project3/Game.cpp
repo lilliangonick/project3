@@ -84,9 +84,9 @@ void Game::play()
                 board->printMap();
                 board->printStats();
                 cout << "player asleep for: " << player.getSleepTime() << endl;
-                if (board->justAttacked()) {
+//                if (board->justAttacked()) {
                     board->printActions();
-                }
+//                }
             if (player.getHP() <= 0) {
                 break;
             }
@@ -122,14 +122,14 @@ void Game::play()
                 }
                 board->printMap();
                 board->printStats();
-                if (board->justAttacked()) {
+//                if (board->justAttacked()) {
                     board->printActions();
-                }
+//                }
                 if (!board->atIdol()) {
                     board->moveMonsters();
-                    if (board->justAttacked()) {
+//                    if (board->justAttacked()) {
                         board->printActions();
-                    }
+//                    }
                 }
                 break;
             case ARROW_UP:
@@ -141,14 +141,14 @@ void Game::play()
                 }
                 board->printMap();
                 board->printStats();
-                if (board->justAttacked()) {
+//                if (board->justAttacked()) {
                     board->printActions();
-                }
+//                }
                 if (!board->atIdol()) {
                     board->moveMonsters();
-                    if (board->justAttacked()) {
+//                    if (board->justAttacked()) {
                         board->printActions();
-                    }
+//                    }
                 }
                 break;
             case ARROW_DOWN:
@@ -160,14 +160,14 @@ void Game::play()
                 }
                 board->printMap();
                 board->printStats();
-                if (board->justAttacked()) {
+//                if (board->justAttacked()) {
                     board->printActions();
-                }
+//                }
                 if (!board->atIdol()) {
                     board->moveMonsters();
-                    if (board->justAttacked()) {
+//                    if (board->justAttacked()) {
                         board->printActions();
-                    }
+//                    }
                 }
                 break;
             case 'g':
@@ -180,9 +180,9 @@ void Game::play()
                 }
                 board->printMap();
                 board->printStats();
-                if (board->justAttacked()) {
+//                if (board->justAttacked()) {
                     board->printActions();
-                }
+//                }
                 break;
             // cheating increasings the players stats
             case 'c':
@@ -225,9 +225,9 @@ void Game::play()
                 board->printStats();
                 if (!board->atIdol()) {
                     board->moveMonsters();
-                    if (board->justAttacked()) {
+//                    if (board->justAttacked()) {
                         board->printActions();
-                    }
+//                    }
                 }
         }
         if (player.getHP() <= 0) {

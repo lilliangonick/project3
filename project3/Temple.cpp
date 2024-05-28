@@ -257,12 +257,12 @@ void Temple::printStats() {
 }
 
 void Temple::printActions() {
-    vector<string>::iterator it = attacks.begin();
-    for (; it != attacks.end(); ++it) {
-        cout << *it << endl;
-    }
-    // erase all attacks up to the last index printed
-    attacks.erase(attacks.begin(), it);
+    size_t initialSize = attacks.size();
+        for (size_t i = 0; i < initialSize; ++i) {
+            cout << attacks[i] << endl;
+        }
+        // erase all attacks up to the last index printed
+        attacks.erase(attacks.begin(), attacks.begin() + initialSize);
 }
 
 // set player icon
