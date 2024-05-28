@@ -12,7 +12,7 @@
 
 using namespace std;
 
-// construct ifno
+// construct info
 Actor::Actor(string name, int xPos, int yPos, int hit, string weaponName, string actionString, int dexterityBonus, int damage, int armor, int strength, int dexterity, bool isMonster) : m_name(name), m_x(xPos), m_y(yPos), m_hit(hit), m_weapon(weaponName, actionString, dexterityBonus, damage), m_armor(armor), m_strength(strength), m_dexterity(dexterity), m_sleepTime(0), m_isMonster(isMonster){}
 
 Actor::~Actor() {}

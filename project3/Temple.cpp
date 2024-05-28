@@ -14,6 +14,7 @@
 #include <iostream>
 #include <typeinfo>
 #include <algorithm>
+#include <cmath>
 
 using namespace std;
 
@@ -66,6 +67,7 @@ Temple::~Temple() {
     inventory.clear(); 
     
     delete stairs;
+    delete idol;
 }
 
 // display map
@@ -652,6 +654,7 @@ void Temple::attack(Actor* attacker, Actor* defender, Weapon weapon) {
 
 // move the monsters based on the position of the player
 void Temple::moveMonsters() {
+    m_justAttacked = false;
     for (vector<Monster*>::iterator it = monsters.begin(); it != monsters.end(); ++it) {
         if ((*it)->isSleeping()) {
             ((*it))->decreaseSleepTime();
@@ -937,6 +940,7 @@ void Temple::readScroll() {
                     result = "\nYou feel like less of a klutz.";
                 }
                 inventoryResult.push_back("You read the scroll called " + scroll->getName() + result);
+                delete selectedItem;
                 inventory.erase(inventory.begin() + index);
             }
         }

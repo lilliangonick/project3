@@ -111,18 +111,19 @@ public:
     
 private:
     char m_map[18][70];
-    vector<Room*> rooms;
     Player* player;
     int m_level;
+    bool m_justAttacked;
     GameObject* stairs;
     GameObject* idol;
     int m_goblinSmellDistance; 
+    
+    vector<Room*> rooms;
     
     // monsters/objects on screen
     vector<Monster*> monsters;
     vector<GameObject*> objects;
     vector<string> attacks;
-    bool m_justAttacked;
     
     // player inventory stuff
     vector<GameObject*> inventory;

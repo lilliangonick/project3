@@ -76,24 +76,23 @@ void Game::play()
     while (c != 'q') {
         player.regainHP();
         c = getCharacter();
-        
+
         // deal with movement when the player is asleep (the monsters can still attack) 
         if (player.isSleeping()) {
-            board->movePlayer(c);
-            if (!board->atIdol()) {
+            board->movePlayer('x');
                 board->moveMonsters();
                 board->printMap();
                 board->printStats();
+                cout << "player asleep for: " << player.getSleepTime() << endl;
                 if (board->justAttacked()) {
                     board->printActions();
                 }
-            }
             if (player.getHP() <= 0) {
                 break;
             }
             continue;
         }
-        switch (c) {
+                switch (c) {
             // check if the desired position is valid, then reprint the display, stats (and action line)
             case ARROW_LEFT:
                 if (!board->validMove(player.getXPos() - 1, player.getYPos())) {
@@ -106,6 +105,12 @@ void Game::play()
                 board->printStats();
                 if (board->justAttacked()) {
                     board->printActions();
+                }
+                if (!board->atIdol()) {
+                    board->moveMonsters();
+                    if (board->justAttacked()) {
+                        board->printActions();
+                    }
                 }
                 break;
             case ARROW_RIGHT:
@@ -120,6 +125,12 @@ void Game::play()
                 if (board->justAttacked()) {
                     board->printActions();
                 }
+                if (!board->atIdol()) {
+                    board->moveMonsters();
+                    if (board->justAttacked()) {
+                        board->printActions();
+                    }
+                }
                 break;
             case ARROW_UP:
                 if (!board->validMove(player.getXPos(), player.getYPos() - 1)) {
@@ -132,6 +143,12 @@ void Game::play()
                 board->printStats();
                 if (board->justAttacked()) {
                     board->printActions();
+                }
+                if (!board->atIdol()) {
+                    board->moveMonsters();
+                    if (board->justAttacked()) {
+                        board->printActions();
+                    }
                 }
                 break;
             case ARROW_DOWN:
@@ -146,11 +163,17 @@ void Game::play()
                 if (board->justAttacked()) {
                     board->printActions();
                 }
+                if (!board->atIdol()) {
+                    board->moveMonsters();
+                    if (board->justAttacked()) {
+                        board->printActions();
+                    }
+                }
                 break;
             case 'g':
                 if (board->atIdol()) {
                     cout << "You pick up the golden idol\n" << "Congratulations, you won!";
-                    break;
+                    return; 
                 }
                 if (board->checkForObjects()) {
                     continue;
@@ -200,14 +223,13 @@ void Game::play()
             default:
                 board->printMap();
                 board->printStats();
+                if (!board->atIdol()) {
+                    board->moveMonsters();
+                    if (board->justAttacked()) {
+                        board->printActions();
+                    }
+                }
         }
-        if (!board->atIdol()) {
-            board->moveMonsters();
-            if (board->justAttacked()) {
-                board->printActions();
-            }
-        }
-        
         if (player.getHP() <= 0) {
             break;
         }

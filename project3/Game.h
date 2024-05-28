@@ -21,9 +21,9 @@ public:
     void newLevel(); 
 private:
     int m_goblinSmellDistance;
-    int m_level;
     Player player;
     Temple* board;
+    int m_level;
 };
 
 #endif // GAME_INCLUDED

@@ -23,11 +23,13 @@ public:
     void setConnected(bool connected);
     
 private:
-    int m_width;
-    int m_height;
     // (m_x, m_y) represents the top left corner of the room
     int m_x;
     int m_y;
+    
+    int m_width;
+    int m_height;
+    
     bool m_connected;
 };
 
