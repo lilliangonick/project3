@@ -14,6 +14,8 @@
 
 #include "GameObject.h"
 
+#include "Temple.h"
+
 class Player : public Actor {
 public:
     Player();
@@ -30,8 +32,25 @@ public:
     // player can cheat
     void cheat();
     
+    
+    // player object actions
+    void pickUpObject(GameObject* object);
+    void applyScroll(GameObject* scroll, Temple* board);
+    void weildWeapon();
+    void readScroll(Temple* board);
+    
+    // inventory stuff
+    void printInventory();
+    void printInventoryResult();
+    vector<string> getInventoryResults();
+    
+    
+    
 private:
     int m_maxHP; 
+    // player inventory stuff
+    vector<GameObject*> inventory;
+    vector<string> inventoryResult;
 };
 
 #endif /* Player_h */

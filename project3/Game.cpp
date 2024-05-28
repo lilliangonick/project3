@@ -193,23 +193,23 @@ void Game::play()
             // print the inventory
             case 'i':
                 clearScreen();
-                board->printInventory();
+                player.printInventory();
                 break;
             // print inventory, then weild a weapon
             case 'w':
                 clearScreen();
-                board->weildWeapon();
+                player.weildWeapon();
                 board->printMap();
                 board->printStats();
-                board->printInventoryResult();
+                player.printInventoryResult();
                 break;
             // print inventory, then read  a scroll
             case 'r':
                 clearScreen();
-                board->readScroll();
+                player.readScroll(board);
                 board->printMap();
                 board->printStats();
-                board->printInventoryResult();
+                player.printInventoryResult();
                 break;
             // generate a new level
             case '>':

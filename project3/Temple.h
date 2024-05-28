@@ -96,18 +96,12 @@ public:
     // pick up idol
     bool atIdol();
     
-    // player object actions
-    void pickUpObject(GameObject* object);
-    void applyScroll(GameObject* scroll);
-    void weildWeapon();
-    void readScroll();
+    //getters
+    GameObject* getStairs();
+    GameObject* getIdol();
+    char (*getMap())[18][70];
+    vector<GameObject*> getObjects();
     
-    // inventory stuff
-    void printInventory();
-    void printInventoryResult();
-    vector<string> getInventoryResults();
-    
-
     
 private:
     char m_map[18][70];
@@ -125,9 +119,9 @@ private:
     vector<GameObject*> objects;
     vector<string> attacks;
     
-    // player inventory stuff
-    vector<GameObject*> inventory;
-    vector<string> inventoryResult;
+//    // player inventory stuff
+//    vector<GameObject*> inventory;
+//    vector<string> inventoryResult;
 };
 
 #endif /* Temple_h */
