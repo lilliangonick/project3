@@ -140,7 +140,7 @@ void Game::play()
                 break;
             case 'g':
                 if (board->atIdol()) {
-                    cout << "You pick up the golden idol\n" << "Congratulations, you won!";
+                    cout << "You pick up the golden idol\n" << "Congratulations, you won!" << endl;
                     return; 
                 }
                 if (board->checkForObjects()) {
@@ -185,6 +185,8 @@ void Game::play()
                     board->printStats();
                     break;
                 }
+                playerMonsterTurn();
+                break;
             // if invalid input, do not do anything
             default:
                 playerMonsterTurn();

@@ -112,7 +112,7 @@ double Temple::calculateDistance(Room room1, Room room2) {
 
 // create random rooms
 void Temple::generateRooms() {
-    int numRooms = randInt(4, 6);
+    int numRooms = randInt(4, 7);
     for (int i = 0; i < numRooms; i++) {
         bool roomAdded = false;
         while(!roomAdded) {
@@ -280,9 +280,7 @@ void Temple::setIdolSpawn(int x, int y) {
 void Temple::setStairs() {
     int x = randInt(1, 69);
     int y = randInt(1, 17);
-    while (
-           !validMove(x, y)
-           ) {
+    while (!validMove(x, y) && !isObjectAt(x, y)) {
         x = randInt(1, 69);
         y = randInt(1, 17);
     }
@@ -295,7 +293,7 @@ void Temple::setStairs() {
 void Temple::setIdol() {
     int x = randInt(1, 69);
     int y = randInt(1, 17);
-    while (!validMove(x, y)) {
+    while (!validMove(x, y) && !isObjectAt(x, y)) {
         x = randInt(1, 69);
         y = randInt(1, 17);
     }
@@ -434,7 +432,7 @@ void Temple::setMonster() {
                 }
         }
     } else if (m_level == 1) {
-        m = randInt(2, 5*(0+1)+1);
+        m = randInt(2, 5*(1+1)+1);
         for (int i = 0; i < m; i++) {
             Monster* monster = nullptr;
             int rand = randInt(0, 1);

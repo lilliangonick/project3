@@ -12,7 +12,7 @@
 
 using namespace std;
 
-Monster::Monster(string name, int xPos, int yPos, int hit, string weaponName, string actionString, int dexterityBonus, int damage, int armor, int strength, int dexterity, int smellRange) : Actor(name, 0, 0, hit, weaponName, actionString, dexterityBonus, damage, armor, strength, dexterity, true), m_smellRange(smellRange), m_isDead(false) {}
+Monster::Monster(string name, int xPos, int yPos, int hit, string weaponName, string actionString, int dexterityBonus, int damage, int armor, int strength, int dexterity, int smellRange) : Actor(name, xPos, yPos, hit, weaponName, actionString, dexterityBonus, damage, armor, strength, dexterity, true), m_smellRange(smellRange), m_isDead(false) {}
 
 // virtual destructor for Monster base class
 Monster::~Monster() {}
@@ -116,14 +116,9 @@ bool Goblin::smell(Player* player, int smellRange) {
     int goblinXPos = getXPos();
     int goblinYPos = getYPos();
     
-    // base case
-    if (playerXPos == goblinXPos && playerYPos == goblinYPos) {
-        return true;
-    }
-    
     int distanceFromPlayer = abs(playerXPos - goblinXPos) + abs(playerYPos - goblinYPos);
     
-    // if goblin is right next to (second base case)
+    // if goblin is right next to (base case)
     if (distanceFromPlayer <= getSmellRange()) {
         if (goblinXPos + 1 == playerXPos && goblinYPos == playerYPos) {
             return true;
