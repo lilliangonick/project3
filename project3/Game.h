@@ -19,6 +19,7 @@ public:
     int getGoblinSmellDistance();
     void play();
     void newLevel(); 
+    void playerMonsterTurn();
 private:
     int m_goblinSmellDistance;
     Player player;

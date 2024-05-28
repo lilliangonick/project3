@@ -19,7 +19,7 @@
 using namespace std;
 
 // create temple (constructor)
-Temple::Temple(Player* pointer, int level, int goblinSmellDistance) : player(pointer), m_level(level), m_justAttacked(false), stairs(new GameObject("stairs", "step")), idol(new GameObject("golden idol", "yay")), m_goblinSmellDistance(goblinSmellDistance) {
+Temple::Temple(Player* pointer, int level, int goblinSmellDistance) : player(pointer), m_level(level), stairs(new GameObject("stairs", "step")), idol(new GameObject("golden idol", "yay")), m_goblinSmellDistance(goblinSmellDistance) {
     int counter = 0;
     do {
         for (int i = 0; i < 18; i++) {
@@ -57,12 +57,6 @@ Temple::~Temple() {
         delete *it;
     }
     rooms.clear();
-    
-//    // delete inventory vector
-//    for (vector<GameObject*>::iterator it = inventory.begin(); it != inventory.end(); it++) {
-//        delete *it;
-//    }
-//    inventory.clear(); 
     
     delete stairs;
     delete idol;
@@ -219,6 +213,7 @@ bool Temple::allRoomsConnected() {
             }
         }
     }
+    // if number of islands is 1, then all the rooms are connected
     return numberOfIslands == 1;
 }
 
@@ -256,6 +251,7 @@ void Temple::printStats() {
     cout << "Level: " << m_level << ", Hit points: " << player->getHP() << ", Armor: " << player->getArmor() << ", Strength: " << player->getStrength() << ", Dexterity: " << player->getDexterity() << endl << endl; 
 }
 
+// print the attack actions
 void Temple::printActions() {
     size_t initialSize = attacks.size();
         for (size_t i = 0; i < initialSize; ++i) {
@@ -280,6 +276,7 @@ void Temple::setIdolSpawn(int x, int y) {
     m_map[y][x] = '&';
 }
 
+// set the stairs on the map
 void Temple::setStairs() {
     int x = randInt(1, 69);
     int y = randInt(1, 17);
@@ -307,10 +304,6 @@ void Temple::setIdol() {
     setIdolSpawn(idol->getXPos(), idol->getYPos());
 }
 
-bool Temple::justAttacked() {
-    return m_justAttacked;
-}
-
 // see if the move is valid
 bool Temple::validMove(int xPos, int yPos) {
     if (m_map[yPos][xPos] == '#') {
@@ -319,12 +312,35 @@ bool Temple::validMove(int xPos, int yPos) {
     return true;
 }
 
-// see if the move is valid
+// see if the move is valid (monsters can not move to where a monster is or where a wall it)
 bool Temple::validMonsterMove(int xPos, int yPos) {
     if (m_map[yPos][xPos] == '#' || m_map[yPos][xPos] == 'B' || m_map[yPos][xPos] == 'S' || m_map[yPos][xPos] == 'D' || m_map[yPos][xPos] == 'G') {
         return false;
     }
     return true;
+}
+
+// do not want the stairs, idol, or objects to get overwritten by an actor's movement
+void Temple::keepObjects(Actor *mover) {
+    m_map[mover->getYPos()][mover->getXPos()] = ' ';
+    if (mover->getXPos() == stairs->getXPos() && mover->getYPos() == stairs->getYPos()) {
+        setStairsSpawn(mover->getXPos(), mover->getYPos());
+    }
+    if (mover->getXPos() == idol->getXPos() && mover->getYPos() == idol->getYPos()) {
+        setIdolSpawn(mover->getXPos(), mover->getYPos());
+    }
+    
+    if (isObjectAt(mover->getXPos(), mover->getYPos())) {
+        for (vector<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it) {
+            if ((*it)->getXPos() == mover->getXPos() && (*it)->getYPos() == mover->getYPos()) {
+                if ((*it)->getType() == "Scroll") {
+                    m_map[(*it)->getYPos()][(*it)->getXPos()] = '?';
+                } else {
+                    m_map[(*it)->getYPos()][(*it)->getXPos()] = '(';
+                }
+            }
+        }
+    }
 }
 
 // move the player based on a command
@@ -335,7 +351,6 @@ void Temple::movePlayer(char c) {
         return;
     }
     
-    m_justAttacked = false;
     int newX = player->getXPos();
     int newY = player->getYPos();
 
@@ -354,29 +369,11 @@ void Temple::movePlayer(char c) {
     if (isMonsterAt(newX, newY)) {
         Monster* monster = getMonsterAt(newX, newY);
         attack(player, monster, player->getWeapon());
-        m_justAttacked = true;
         return; // do not move the player
     }
     
-    m_map[player->getYPos()][player->getXPos()] = ' ';
-    if (player->getXPos() == stairs->getXPos() && player->getYPos() == stairs->getYPos()) {
-        setStairsSpawn(player->getXPos(), player->getYPos());
-    }
-    if (player->getXPos() == idol->getXPos() && player->getYPos() == idol->getYPos()) {
-        setIdolSpawn(player->getXPos(), player->getYPos());
-    }
-    
-    if (isObjectAt(player->getXPos(), player->getYPos())) {
-        for (vector<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it) {
-            if ((*it)->getXPos() == player->getXPos() && (*it)->getYPos() == player->getYPos()) {
-                if ((*it)->getType() == "Scroll") {
-                    m_map[(*it)->getYPos()][(*it)->getXPos()] = '?';
-                } else {
-                    m_map[(*it)->getYPos()][(*it)->getXPos()] = '(';
-                }
-            }
-        }
-    }
+    // do not want stairs or objects to get overwritten
+    keepObjects(player);
     
     // move the player to the new position
     player->Actor::setXPos(newX);
@@ -630,7 +627,8 @@ void Temple::attack(Actor* attacker, Actor* defender, Weapon weapon) {
     // deletes the monster if it dies
     if (defender->getHP() <= 0) {
         attacks.push_back(attackerName + " " + weaponAction + " " + weaponName + " at " + defenderName + " dealing a final blow.");
-        m_map[defender->getYPos()][defender->getXPos()] = ' ';
+        // do not overwrite stairs, idol, or objects
+        keepObjects(defender);
         if (defender->isMonster()) {
             // drop an item (based on a probability) upon death
             if (!isObjectAt(defender->getXPos(), defender->getYPos())) {
@@ -669,7 +667,6 @@ void Temple::attack(Actor* attacker, Actor* defender, Weapon weapon) {
 
 // move the monsters based on the position of the player
 void Temple::moveMonsters() {
-    m_justAttacked = false;
     for (vector<Monster*>::iterator it = monsters.begin(); it != monsters.end(); ++it) {
         if ((*it)->isSleeping()) {
             ((*it))->decreaseSleepTime();
@@ -690,19 +687,15 @@ void Temple::moveMonsters() {
             // if the dragon is already next to the player, attack directly
             if ((*it)->getXPos() + 1 == player->getXPos() && (*it)->getYPos() == player->getYPos()) {
                 attack((*it), player, (*it)->getWeapon());
-                m_justAttacked = true;
                 return;
             } else if ((*it)->getXPos() - 1 == player->getXPos() && (*it)->getYPos() == player->getYPos()) {
                 attack((*it), player, (*it)->getWeapon());
-                m_justAttacked = true;
                 return;
             } else if ((*it)->getXPos() == player->getXPos() && (*it)->getYPos() + 1 == player->getYPos()) {
                 attack((*it), player, (*it)->getWeapon());
-                m_justAttacked = true;
                 return;
             } else if ((*it)->getXPos() == player->getXPos() && (*it)->getYPos() - 1 == player->getYPos()) {
                 attack((*it), player, (*it)->getWeapon());
-                m_justAttacked = true;
                 return;
             }
         } else if ((*it)->getName() == "the Goblin") {
@@ -719,7 +712,6 @@ void Temple::moveMonsters() {
 
 // calculate which step to move towards the player
 void Temple::moveTowardsPlayer(Monster* monster, char monsterChar) {
-    m_justAttacked = false;
     int playerXPos = player->getXPos();
     int playerYPos = player->getYPos();
     int monsterXPos = monster->getXPos();
@@ -728,19 +720,15 @@ void Temple::moveTowardsPlayer(Monster* monster, char monsterChar) {
     // if the monster is already next to the player, attack directly
     if (monsterXPos + 1 == playerXPos && monsterYPos == playerYPos) {
         attack(monster, player, monster->getWeapon());
-        m_justAttacked = true;
         return;
     } else if (monsterXPos - 1 == playerXPos && monsterYPos == playerYPos) {
         attack(monster, player, monster->getWeapon());
-        m_justAttacked = true;
         return;
     } else if (monsterXPos == playerXPos && monsterYPos + 1 == playerYPos) {
         attack(monster, player, monster->getWeapon());
-        m_justAttacked = true;
         return;
     } else if (monsterXPos == playerXPos && monsterYPos - 1 == playerYPos) {
         attack(monster, player, monster->getWeapon());
-        m_justAttacked = true;
         return;
     }
     
@@ -759,30 +747,9 @@ void Temple::moveTowardsPlayer(Monster* monster, char monsterChar) {
         newMonsterYPos = monsterYPos - 1;
     }
     
-    m_map[monsterYPos][monsterXPos] = ' '; // clear the old position
+    // do not overwrite stairs, idol, or objects
+    keepObjects(monster);
     
-    // do not overwrite the stairs
-    if (monster->getXPos() == stairs->getXPos() && monster->getYPos() == stairs->getYPos()) {
-        setStairsSpawn(monster->getXPos(), monster->getYPos());
-    }
-    
-    // do not overwrite the golden idol
-    if (monster->getXPos() == idol->getXPos() && monster->getYPos() == idol->getYPos()) {
-        setIdolSpawn(monster->getXPos(), monster->getYPos());
-    }
-    
-    // make sure player movement does not overwrite the objects
-    if (isObjectAt(monster->getXPos(), monster->getYPos())) {
-        for (vector<GameObject*>::iterator it = objects.begin(); it != objects.end(); ++it) {
-            if ((*it)->getXPos() == monster->getXPos() && (*it)->getYPos() == monster->getYPos()) {
-                if ((*it)->getType() == "Scroll") {
-                    m_map[(*it)->getYPos()][(*it)->getXPos()] = '?';
-                } else {
-                    m_map[(*it)->getYPos()][(*it)->getXPos()] = '(';
-                }
-            }
-        }
-    }
     m_map[newMonsterYPos][newMonsterXPos] = monsterChar; // set the new position
     monster->setXPos(newMonsterXPos);
     monster->setYPos(newMonsterYPos);

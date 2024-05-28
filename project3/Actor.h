@@ -42,7 +42,8 @@ public:
     void CHANGESTRENGTH(int n);
     void CHANGEHITPOINT(int n);
     
-    bool isMonster(); 
+    // is the actor a monster?
+    bool isMonster();
     
     // deal with sleeping functionality
     bool isSleeping();

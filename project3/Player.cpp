@@ -67,7 +67,6 @@ GameObject* Actor::dropNewItem() {
 }
 
 // player inventory functions:
-
 // player can pick up objects into its inventory
 void Player::pickUpObject(GameObject* object) {
     if (inventory.size() > 25) {

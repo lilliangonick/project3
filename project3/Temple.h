@@ -68,7 +68,7 @@ public:
     // place golden idol
     void setIdol();
     
-//    void applyScroll(GameObject* scroll);
+    // object pick up
     bool checkForObjects();
     bool isObjectAt(int x, int y);
     
@@ -82,9 +82,6 @@ public:
     // check if the player is where the monster is moving
     bool isPlayerAt(int x, int y); 
     
-    // was an actor just attacked
-    bool justAttacked();
-    
     // move monsters based on the player
     void moveMonsters(); 
     void moveTowardsPlayer(Monster* monster, char monsterChar);
@@ -95,6 +92,9 @@ public:
     
     // pick up idol
     bool atIdol();
+    
+    // do not want the stairs, idol, or objects to get overwritten when an actor moves
+    void keepObjects(Actor* mover);
     
     //getters
     GameObject* getStairs();
@@ -107,7 +107,6 @@ private:
     char m_map[18][70];
     Player* player;
     int m_level;
-    bool m_justAttacked;
     GameObject* stairs;
     GameObject* idol;
     int m_goblinSmellDistance; 
@@ -118,10 +117,6 @@ private:
     vector<Monster*> monsters;
     vector<GameObject*> objects;
     vector<string> attacks;
-    
-//    // player inventory stuff
-//    vector<GameObject*> inventory;
-//    vector<string> inventoryResult;
 };
 
 #endif /* Temple_h */

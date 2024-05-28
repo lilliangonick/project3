@@ -30,13 +30,14 @@ void Game::newLevel() {
     // create a new board
     board = new Temple(&player, m_level, m_goblinSmellDistance);
     
+    // spawn the game objects
+    board->setGameObject();
+    board->setGameObjectSpawn();
+    
     // spawn the monsters
     board->setMonster();
     board->setMonsterSpawn();
     
-    // spawn the game objects
-    board->setGameObject();
-    board->setGameObjectSpawn();
     
     if (m_level < 4) {
         // spawn the stairs
@@ -50,6 +51,16 @@ void Game::newLevel() {
     board->setPlayer(player.getXPos(), player.getYPos());
 }
 
+// common player monster turn
+void Game::playerMonsterTurn() {
+    board->printMap();
+    board->printStats();
+    board->printActions();
+    if (!board->atIdol()) {
+        board->moveMonsters();
+        board->printActions();
+    }
+}
 // play a level of Doom
 void Game::play()
 {
@@ -83,10 +94,7 @@ void Game::play()
                 board->moveMonsters();
                 board->printMap();
                 board->printStats();
-                cout << "player asleep for: " << player.getSleepTime() << endl;
-//                if (board->justAttacked()) {
-                    board->printActions();
-//                }
+                board->printActions();
             if (player.getHP() <= 0) {
                 break;
             }
@@ -101,17 +109,7 @@ void Game::play()
                 else {
                     board->movePlayer(c);
                 }
-                board->printMap();
-                board->printStats();
-                if (board->justAttacked()) {
-                    board->printActions();
-                }
-                if (!board->atIdol()) {
-                    board->moveMonsters();
-                    if (board->justAttacked()) {
-                        board->printActions();
-                    }
-                }
+                playerMonsterTurn();
                 break;
             case ARROW_RIGHT:
                 if (!board->validMove(player.getXPos() + 1, player.getYPos())) {
@@ -120,17 +118,7 @@ void Game::play()
                 else {
                     board->movePlayer(c);
                 }
-                board->printMap();
-                board->printStats();
-//                if (board->justAttacked()) {
-                    board->printActions();
-//                }
-                if (!board->atIdol()) {
-                    board->moveMonsters();
-//                    if (board->justAttacked()) {
-                        board->printActions();
-//                    }
-                }
+                        playerMonsterTurn();
                 break;
             case ARROW_UP:
                 if (!board->validMove(player.getXPos(), player.getYPos() - 1)) {
@@ -139,17 +127,7 @@ void Game::play()
                 else {
                     board->movePlayer(c);
                 }
-                board->printMap();
-                board->printStats();
-//                if (board->justAttacked()) {
-                    board->printActions();
-//                }
-                if (!board->atIdol()) {
-                    board->moveMonsters();
-//                    if (board->justAttacked()) {
-                        board->printActions();
-//                    }
-                }
+                playerMonsterTurn();
                 break;
             case ARROW_DOWN:
                 if (!board->validMove(player.getXPos(), player.getYPos() + 1)) {
@@ -158,17 +136,7 @@ void Game::play()
                 else {
                     board->movePlayer(c);
                 }
-                board->printMap();
-                board->printStats();
-//                if (board->justAttacked()) {
-                    board->printActions();
-//                }
-                if (!board->atIdol()) {
-                    board->moveMonsters();
-//                    if (board->justAttacked()) {
-                        board->printActions();
-//                    }
-                }
+                    playerMonsterTurn();
                 break;
             case 'g':
                 if (board->atIdol()) {
@@ -180,9 +148,7 @@ void Game::play()
                 }
                 board->printMap();
                 board->printStats();
-//                if (board->justAttacked()) {
-                    board->printActions();
-//                }
+                board->printActions();
                 break;
             // cheating increasings the players stats
             case 'c':
@@ -221,14 +187,7 @@ void Game::play()
                 }
             // if invalid input, do not do anything
             default:
-                board->printMap();
-                board->printStats();
-                if (!board->atIdol()) {
-                    board->moveMonsters();
-//                    if (board->justAttacked()) {
-                        board->printActions();
-//                    }
-                }
+                playerMonsterTurn();
         }
         if (player.getHP() <= 0) {
             break;

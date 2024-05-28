@@ -140,6 +140,3 @@ void Actor::magicFangsEffect() {
 void Actor::decreaseSleepTime() {
     m_sleepTime--; 
 }
-// TODO ideas
-// inventory class with a inventory pointer to the player
-// in board class put a vector that contains all mosnters so you know wehre they are 
