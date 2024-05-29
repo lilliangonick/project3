@@ -103,7 +103,7 @@ public:
     vector<GameObject*> getObjects();
     
     // bfs
-    int bfs(Monster* Goblin, char copy[18][70]);
+    vector<array<int, 2>> bfs(Monster* goblin, char copy[18][70]);
     bool isValidBFS(int x, int y, char copy[18][70]);
     
     
