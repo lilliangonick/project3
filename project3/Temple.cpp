@@ -827,7 +827,7 @@ bool Temple::atIdol() {
 // is the goblin move valid
 bool Temple::isValidBFS(int x, int y, char copy[18][70]) {
     // if position is out of bounds or a wall
-    if (x < 0 || y < 0 || y >= 18 || x >= 70 || m_map[y][x] == '#' || m_map[y][x] == 'D' || m_map[y][x] == 'S' || m_map[y][x] == 'B') {
+    if (x < 0 || y < 0 || y >= 18 || x >= 70 || copy[y][x] == '#' || copy[y][x] == 'D' || copy[y][x] == 'S' || copy[y][x] == 'B') {
         return false;
     }
     
@@ -843,6 +843,65 @@ bool Temple::isValidBFS(int x, int y, char copy[18][70]) {
 // 2 is left
 // 3 is up
 // 4 is down
+//int Temple::bfs(Monster* goblin, char copy[18][70]) {
+//    const int dRow[] = {0, 0, -1, 1};
+//    const int dCol[] = {1, -1, 0, 0};
+//    
+//    // store each cell in the map
+//    queue<array<int, 2>> q;
+//    
+//    // save the path
+//    vector<array<int, 2>> path;
+//    vector<vector<array<int, 2>>> parent(18, vector<array<int, 2>>(70, {-1, -1}));
+//    
+//    q.push({goblin->getXPos(), goblin->getYPos()});
+//    copy[goblin->getYPos()][goblin->getXPos()] = '1';
+//    
+//    while (!q.empty()) {
+//        array<int, 2> cell = q.front();
+//        
+//        int x = cell[0];
+//        int y = cell[1];
+//        
+//        q.pop();
+//        
+//        // return the position to move towards
+//        if (player->getXPos() == x && player->getYPos() == y) {
+//            while (x != goblin->getXPos() || y != goblin->getYPos()) {
+//                path.push_back({x, y});
+//                array<int, 2> next = parent[y][x];
+//                x = next[0];
+//                y = next[1];
+//            }
+//            
+//            if (x > goblin->getXPos()) {
+//                return 1;
+//            }
+//            if (x < goblin->getXPos()) {
+//                return 2;
+//            }
+//            if (y < goblin->getYPos()) {
+//                return 3;
+//            }
+//            if (y > goblin->getYPos()) {
+//                return 4;
+//            }
+//        }
+//        
+//        for (int i = 0; i < 4 ; i++) {
+//            int adjacentX = x + dRow[i];
+//            int adjacentY = y + dCol[i];
+////            cout << "x: " << adjacentX << endl;
+////            cout << "y: " << adjacentY << endl;
+//            if (isValidBFS(adjacentX, adjacentY, copy)) {
+//                    q.push({ adjacentX, adjacentY });
+//                    copy[adjacentY][adjacentX] = '1';
+//                    parent[adjacentY][adjacentX] = {x, y};
+//            }
+//        }
+//    }
+//    return 0; // should never really hit this case
+//}
 int Temple::bfs(Monster* goblin, char copy[18][70]) {
     const int dRow[] = {0, 0, -1, 1};
     const int dCol[] = {1, -1, 0, 0};
@@ -854,8 +913,8 @@ int Temple::bfs(Monster* goblin, char copy[18][70]) {
     vector<array<int, 2>> path;
     vector<vector<array<int, 2>>> parent(18, vector<array<int, 2>>(70, {-1, -1}));
     
-    q.push({goblin->getXPos(), goblin->getYPos()});
-    copy[goblin->getYPos()][goblin->getXPos()] = '1';
+    q.push({player->getXPos(), player->getYPos()});
+    copy[player->getYPos()][player->getXPos()] = '1';  // Mark player's position as visited
     
     while (!q.empty()) {
         array<int, 2> cell = q.front();
@@ -865,9 +924,9 @@ int Temple::bfs(Monster* goblin, char copy[18][70]) {
         
         q.pop();
         
-        // return the position to move towards
-        if (player->getXPos() == x && player->getYPos() == y) {
-            while (x != goblin->getXPos() || y != goblin->getYPos()) {
+        // Return the position to move towards
+        if (x == goblin->getXPos() && y == goblin->getYPos()) {
+            while (x != player->getXPos() || y != player->getYPos()) {
                 path.push_back({x, y});
                 array<int, 2> next = parent[y][x];
                 x = next[0];
@@ -875,28 +934,23 @@ int Temple::bfs(Monster* goblin, char copy[18][70]) {
             }
             
             if (x > goblin->getXPos()) {
-                return 1;
-            }
-            if (x < goblin->getXPos()) {
-                return 2;
-            }
-            if (y < goblin->getYPos()) {
-                return 3;
-            }
-            if (y > goblin->getYPos()) {
-                return 4;
+                return 1;  // Right
+            } else if (x < goblin->getXPos()) {
+                return 2;  // Left
+            } else if (y > goblin->getYPos()) {
+                return 3;  // Up
+            } else if (y < goblin->getYPos()) {
+                return 4;  // Down
             }
         }
         
         for (int i = 0; i < 4 ; i++) {
             int adjacentX = x + dRow[i];
             int adjacentY = y + dCol[i];
-//            cout << "x: " << adjacentX << endl;
-//            cout << "y: " << adjacentY << endl;
             if (isValidBFS(adjacentX, adjacentY, copy)) {
-                    q.push({ adjacentX, adjacentY });
-                    copy[adjacentY][adjacentX] = '1';
-                    parent[adjacentY][adjacentX] = {x, y};
+                q.push({adjacentX, adjacentY});
+                copy[adjacentY][adjacentX] = '1';  // Mark position as visited
+                parent[adjacentY][adjacentX] = {x, y};  // Save parent cell for path reconstruction
             }
         }
     }
