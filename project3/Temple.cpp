@@ -15,6 +15,7 @@
 #include <typeinfo>
 #include <algorithm>
 #include <cmath>
+#include <queue>
 
 using namespace std;
 
@@ -698,7 +699,59 @@ void Temple::moveMonsters() {
             }
         } else if ((*it)->getName() == "the Goblin") {
             if ((*it)->smell(player)) {
-                moveTowardsPlayer(*it, 'G');
+                // if goblin next to player, then attack
+                int playerXPos = player->getXPos();
+                int playerYPos = player->getYPos();
+                int monsterXPos = (*it)->getXPos();
+                int monsterYPos = (*it)->getYPos();
+                
+                // if the monster is already next to the player, attack directly
+                if (monsterXPos + 1 == playerXPos && monsterYPos == playerYPos) {
+                    attack((*it), player, (*it)->getWeapon());
+                    return;
+                } else if (monsterXPos - 1 == playerXPos && monsterYPos == playerYPos) {
+                    attack((*it), player, (*it)->getWeapon());
+                    return;
+                } else if (monsterXPos == playerXPos && monsterYPos + 1 == playerYPos) {
+                    attack((*it), player, (*it)->getWeapon());
+                    return;
+                } else if (monsterXPos == playerXPos && monsterYPos - 1 == playerYPos) {
+                    attack((*it), player, (*it)->getWeapon());
+                    return;
+                }
+                
+                // if not conduct bfs to find the most optimal pathway
+                char copy[18][70];
+                for (int i = 0; i < 18; i++) {
+                    for (int j = 0; j < 70; j++) {
+                        copy[i][j] = m_map[i][j];
+                    }
+                }
+                
+                // variables to store new position
+                int newMonsterXPos = monsterXPos;
+                int newMonsterYPos = monsterYPos;
+                
+                int moveDirection = bfs(*it, copy);
+                cout << "move direction: " << moveDirection << endl;
+                if (moveDirection == 1) {
+                    newMonsterXPos = monsterXPos + 1;
+                } else if (moveDirection == 2) {
+                    newMonsterXPos = monsterXPos - 1;
+                } else if (moveDirection == 3) {
+                    newMonsterYPos = monsterYPos + 1;
+                } else if (moveDirection == 4) {
+                    newMonsterYPos = monsterYPos - 1;
+                }
+                
+                // do not overwrite stairs, idol, or objects
+                keepObjects(*it);
+                
+                m_map[newMonsterYPos][newMonsterXPos] = 'G'; // set the new position
+                (*it)->setXPos(newMonsterXPos);
+                (*it)->setYPos(newMonsterYPos);
+                
+//                moveTowardsPlayer(*it, 'G');
             }
         }
         // if player is already dead when the monsters are attacking, return
@@ -769,4 +822,83 @@ bool Temple::atIdol() {
     } else {
         return false; 
     }
+}
+
+// is the goblin move valid
+bool Temple::isValidBFS(int x, int y, char copy[18][70]) {
+    // if position is out of bounds or a wall
+    if (x < 0 || y < 0 || y >= 18 || x >= 70 || m_map[y][x] == '#' || m_map[y][x] == 'D' || m_map[y][x] == 'S' || m_map[y][x] == 'B') {
+        return false;
+    }
+    
+    // if the position has already been visited
+    if (copy[y][x] == '1') {
+        return false;
+    }
+    
+    return true;
+}
+
+// 1 is right
+// 2 is left
+// 3 is up
+// 4 is down
+int Temple::bfs(Monster* goblin, char copy[18][70]) {
+    const int dRow[] = {0, 0, -1, 1};
+    const int dCol[] = {1, -1, 0, 0};
+    
+    // store each cell in the map
+    queue<array<int, 2>> q;
+    
+    // save the path
+    vector<array<int, 2>> path;
+    vector<vector<array<int, 2>>> parent(18, vector<array<int, 2>>(70, {-1, -1}));
+    
+    q.push({goblin->getXPos(), goblin->getYPos()});
+    copy[goblin->getYPos()][goblin->getXPos()] = '1';
+    
+    while (!q.empty()) {
+        array<int, 2> cell = q.front();
+        
+        int x = cell[0];
+        int y = cell[1];
+        
+        q.pop();
+        
+        // return the position to move towards
+        if (player->getXPos() == x && player->getYPos() == y) {
+            while (x != goblin->getXPos() || y != goblin->getYPos()) {
+                path.push_back({x, y});
+                array<int, 2> next = parent[y][x];
+                x = next[0];
+                y = next[1];
+            }
+            
+            if (x > goblin->getXPos()) {
+                return 1;
+            }
+            if (x < goblin->getXPos()) {
+                return 2;
+            }
+            if (y < goblin->getYPos()) {
+                return 3;
+            }
+            if (y > goblin->getYPos()) {
+                return 4;
+            }
+        }
+        
+        for (int i = 0; i < 4 ; i++) {
+            int adjacentX = x + dRow[i];
+            int adjacentY = y + dCol[i];
+//            cout << "x: " << adjacentX << endl;
+//            cout << "y: " << adjacentY << endl;
+            if (isValidBFS(adjacentX, adjacentY, copy)) {
+                    q.push({ adjacentX, adjacentY });
+                    copy[adjacentY][adjacentX] = '1';
+                    parent[adjacentY][adjacentX] = {x, y};
+            }
+        }
+    }
+    return 0; // should never really hit this case
 }

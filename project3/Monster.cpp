@@ -9,6 +9,7 @@
 #include "Temple.h"
 #include "utilities.h"
 #include <cmath>
+#include <vector>
 
 using namespace std;
 
@@ -110,14 +111,51 @@ GameObject* Goblin::dropNewItem() {
     }
 }
 
+//bool Goblin::smell(Player* player, int smellRange) {
+//    int playerXPos = player->getXPos();
+//    int playerYPos = player->getYPos();
+//    int goblinXPos = getXPos();
+//    int goblinYPos = getYPos();
+//    
+//    int distanceFromPlayer = abs(playerXPos - goblinXPos) + abs(playerYPos - goblinYPos);
+//    
+//    // if goblin is right next to (base case)
+//    if (distanceFromPlayer <= getSmellRange()) {
+//        if (goblinXPos + 1 == playerXPos && goblinYPos == playerYPos) {
+//            return true;
+//        } else if (goblinXPos - 1 == playerXPos && goblinYPos == playerYPos) {
+//            return true;
+//        } else if (goblinXPos == playerXPos && goblinYPos + 1 == playerYPos) {
+//            return true;
+//        } else if (goblinXPos == playerXPos && goblinYPos - 1== playerYPos) {
+//            return true;
+//        }
+//        
+//        // recursive step
+//        if (goblinXPos + 1 != playerXPos && smell(player, smellRange - 1)) {
+//            return true;
+//        }
+//        if (goblinXPos - 1 != playerXPos && smell(player, smellRange - 1)) {
+//            return true;
+//        }
+//        if (goblinYPos + 1 != playerYPos && smell(player, smellRange - 1)) {
+//            return true;
+//        }
+//        if (goblinYPos - 1 != playerYPos && smell(player, smellRange - 1)) {
+//            return true;
+//        }
+//    }
+//    return false; 
+//}
+
 bool Goblin::smell(Player* player, int smellRange) {
     int playerXPos = player->getXPos();
     int playerYPos = player->getYPos();
     int goblinXPos = getXPos();
     int goblinYPos = getYPos();
-    
+
     int distanceFromPlayer = abs(playerXPos - goblinXPos) + abs(playerYPos - goblinYPos);
-    
+
     // if goblin is right next to (base case)
     if (distanceFromPlayer <= getSmellRange()) {
         if (goblinXPos + 1 == playerXPos && goblinYPos == playerYPos) {
@@ -126,10 +164,10 @@ bool Goblin::smell(Player* player, int smellRange) {
             return true;
         } else if (goblinXPos == playerXPos && goblinYPos + 1 == playerYPos) {
             return true;
-        } else if (goblinXPos == playerXPos && goblinYPos - 1== playerYPos) {
+        } else if (goblinXPos == playerXPos && goblinYPos - 1 == playerYPos) {
             return true;
         }
-        
+
         // recursive step
         if (goblinXPos + 1 != playerXPos && smell(player, smellRange - 1)) {
             return true;
@@ -144,5 +182,5 @@ bool Goblin::smell(Player* player, int smellRange) {
             return true;
         }
     }
-    return false; 
+    return false;
 }

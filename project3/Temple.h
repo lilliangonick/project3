@@ -102,6 +102,10 @@ public:
     char (*getMap())[18][70];
     vector<GameObject*> getObjects();
     
+    // bfs
+    int bfs(Monster* Goblin, char copy[18][70]);
+    bool isValidBFS(int x, int y, char copy[18][70]);
+    
     
 private:
     char m_map[18][70];
